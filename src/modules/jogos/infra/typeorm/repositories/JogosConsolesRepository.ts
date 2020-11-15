@@ -20,6 +20,14 @@ class JogosConsolesRepository implements IJogosConsolesRepository {
         return jogoConsole;
     };
 
+    public async getIdsConsolePorIdJogo(idJogo: string): Promise<string[]>{
+        const consoles = await this.ormRepository.find({
+            where:{idJogo}
+        })
+
+        return consoles.map( console => (console.idConsole));
+    };
+
 }
 
 export default JogosConsolesRepository;

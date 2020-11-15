@@ -40,13 +40,21 @@ class ConvitesRepository implements IConvitesRepository {
 
     public async acharTodosDeUmaTroca(troca: Troca): Promise<Convite[]>{
         //Colocar em um array todas as trocas de um usuário
-        //Colocar em um array todas as trocas de um usuário
         const convites = await this.ormRepository.find({
             where:{idTroca: troca.id}
         });
 
         return convites;
     }
+
+    public async acharTodosDeUmIdUser_solicitador(IdUser_solicitador: string): Promise<Convite[]>{
+        const convites = await this.ormRepository.find({
+            where:{idUser_solicitador: IdUser_solicitador}
+        });
+
+        return convites;
+    }
+
 
 }
 

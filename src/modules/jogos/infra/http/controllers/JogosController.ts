@@ -4,6 +4,8 @@ import { container } from 'tsyringe';
 
 
 import CriaJogoService from '@modules/jogos/services/CriaJogoService';
+import ExibeJogosService from '@modules/jogos/services/ExibeJogosService';
+
 import { classToClass } from 'class-transformer';
 
 export default class ConsolesController{
@@ -20,5 +22,13 @@ export default class ConsolesController{
         });
 
         return response.json(classToClass(jogo));
+    }
+
+    public async exibir(request: Request, response: Response ):Promise<Response>{
+        const exibeJogos = container.resolve(ExibeJogosService);
+
+        const jogos = await exibeJogos.executar();
+
+        return response.json(jogos);
     }
 }

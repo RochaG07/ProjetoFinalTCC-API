@@ -11,6 +11,7 @@ import CriaNegociacaoService from "./CriaNegociacaoService";
 interface IRequest {
     idConvite: string,
     idUser: string,
+    respostaAoConvite: string,
 }
 
 @injectable()
@@ -22,15 +23,18 @@ class AceitaConviteService{
         private convitesRepository: IConvitesRepository,
     ){}
 
-    public async executar({idConvite, idUser} : IRequest ):Promise<Convite> {
+    public async executar({idConvite, idUser, respostaAoConvite} : IRequest ):Promise<Convite> {
+
+        if(respostaAoConvite !== "aceitar" && respostaAoConvite !== "recusar"){
+            throw new AppError("Resposta ao convite inválida");
+        }
+
         //Verifica se id de usuário é valido e se pode aceitar (é o criador da troca)
         const usuario = await this.usuariosRepository.acharPorId(idUser);
 
         if(!usuario){
             throw new AppError("Usuário não existe");
         }
-
-        console.log(idConvite);
 
         //Verifica se id de convite é valido e não deixar aceitar se o convite já tiver sido aceito
         const convite = await this.convitesRepository.acharPorId(idConvite);
@@ -39,8 +43,8 @@ class AceitaConviteService{
             throw new AppError("Convite não existe");
         }
 
-        if(convite.foiAceito){
-            throw new AppError("Já foi aceito");
+        if(convite.foiAceito !== null){
+            throw new AppError("Já foi aceito/recusado");
         }
 
         // Não deixar que um usuário aceite seu próprio convite
@@ -50,22 +54,25 @@ class AceitaConviteService{
             throw new AppError("Isso não deveria ser possível");
         }
 
-        console.log(usuario);
-        console.log(usuarioSolicitador);
-
         if(usuario.id === usuarioSolicitador.id){
-            throw new AppError("O usuário que solicitou o convite não pode aceita-lo");
+            throw new AppError("O usuário que solicitou o convite não pode responde-lo");
         }
 
-        convite.foiAceito = true;
-        convite.dataAceitacao = new Date(Date.now());
+        if(respostaAoConvite === "aceitar"){
+            convite.foiAceito = true;
+        
+            //Cria negociação
+            const criaNegociacao = container.resolve(CriaNegociacaoService);
+    
+            await criaNegociacao.executar(convite);
+    
+        } else if(respostaAoConvite === "recusar"){
+            convite.foiAceito = false;
+        }
+
+        convite.dataResposta = new Date(Date.now());
 
         await this.convitesRepository.salvar(convite);
-
-        //Cria negociação
-        const criaNegociacao = container.resolve(CriaNegociacaoService);
-
-        criaNegociacao.executar(convite);
 
         return convite;
     }

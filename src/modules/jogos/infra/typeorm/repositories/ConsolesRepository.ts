@@ -27,6 +27,18 @@ class ConsolesRepository implements IConsolesRepository {
 
         return console;
     }
+
+    public async transformaIdConsoleEmNome(idConsole: string): Promise<string | undefined>{
+        const console = await this.ormRepository.findOne({
+            where:{id: idConsole}
+        });
+        
+        if(console){
+            return console.nome;
+        } else {
+            return undefined;
+        }
+    }
 }
 
 export default ConsolesRepository;

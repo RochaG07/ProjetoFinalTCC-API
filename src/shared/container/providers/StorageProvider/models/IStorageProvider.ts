@@ -1,4 +1,6 @@
+import IFileParamsDTO from '../dtos/IFileParamsDTO';
+
 export default interface IStorageProvider {
-    salvarArquivo(arquivo: string): Promise<string>;
-    deletarArquivo(arquivo: string): Promise<void>;
+    salvarArquivo( data: IFileParamsDTO): Promise<string>;
+    deletarArquivo( data: IFileParamsDTO): Promise<void>;
 }

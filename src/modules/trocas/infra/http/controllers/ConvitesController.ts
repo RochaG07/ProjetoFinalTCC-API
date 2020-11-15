@@ -35,14 +35,15 @@ export default class ConvitesController{
 
 
     public async alterar(request: Request, response: Response ):Promise<Response>{
-        const { idConvite } = request.body;
+        const { idConvite, respostaAoConvite } = request.body;
         const idUser = request.user.id;
 
         const aceitaConvite = container.resolve(AceitaConviteService);
 
         const convite = await aceitaConvite.executar({
             idConvite,
-            idUser
+            idUser,
+            respostaAoConvite
         });
 
         return response.json(convite);

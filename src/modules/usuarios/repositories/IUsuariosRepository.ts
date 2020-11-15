@@ -9,5 +9,6 @@ export default interface IUsuariosRepository{
     acharPorId(id: string): Promise<Usuario | undefined>;
     acharPorUsername(username: string): Promise<Usuario | undefined>;
     acharPorNome(nome: string): Promise<Usuario | undefined>;
+    transformaIdEmNome(id: string): Promise<string | undefined>;
 
 }

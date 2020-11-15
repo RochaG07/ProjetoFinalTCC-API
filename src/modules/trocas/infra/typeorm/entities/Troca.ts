@@ -12,6 +12,24 @@ class Troca {
 
     @Column()
     ativo: boolean;
+
+    @Column()
+    nomeJogoOfertado: string;
+
+    @Column()
+    nomeJogoDesejado: string;
+
+    @Column()
+    urlDaCapaJogoOfertado: string;
+
+    @Column()
+    urlDaCapaJogoDesejado: string;
+
+    @Column()
+    nomeConsoleJogoOfertado: string;
+
+    @Column()
+    nomeConsoleJogoDesejado: string;
     
     @CreateDateColumn()
     dataCriacao: Date;

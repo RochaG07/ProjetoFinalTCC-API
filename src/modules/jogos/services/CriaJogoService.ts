@@ -7,6 +7,7 @@ import Jogo from '@modules/jogos/infra/typeorm/entities/Jogo';
 import IConsolesRepository from '@modules/jogos/repositories/IConsolesRepository';
 import IJogosRepository from '@modules/jogos/repositories/IJogosRepository';
 import IJogosConsolesRepository from '@modules/jogos/repositories/IJogosConsolesRepository';
+import IStorageProvider from '@shared/container/providers/StorageProvider/models/IStorageProvider';
 
 interface IRequest {
     nome: string,
@@ -26,6 +27,9 @@ class CriaJogoService{
 
         @inject('JogosConsolesRepository')
         private jogosConsolesRepository: IJogosConsolesRepository,
+
+        @inject('StorageProvider')
+        private storageProvider: IStorageProvider,
     ){}
 
     public async executar({nome, consoles, capa, idAdm}: IRequest):Promise<Jogo> {
@@ -39,6 +43,11 @@ class CriaJogoService{
             nome,
             capa,
             idAdm
+        });
+
+        await this.storageProvider.salvarArquivo({
+            arquivo: capa,
+            pasta:'capas'
         });
 
         //Pra cada um dos consoles de jogo, cria um registro em jogos_consoles

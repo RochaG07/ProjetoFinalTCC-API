@@ -34,9 +34,7 @@ export default function requerAutenticacao(
         request.user = {
             id: sub,
         }
-
-        console.log(decoded);
-
+        
         return next();
     } catch {
         throw new AppError('Token JWT inválido', 401);

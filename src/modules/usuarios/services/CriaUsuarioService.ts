@@ -58,9 +58,9 @@ class CriaUsuarioService{
         });
 
         //Define o plano do usuario recém criado
-        const atribuiPlanoParaUsuario = container.resolve(AtribuiPlanoParaUsuario);
+        //const atribuiPlanoParaUsuario = container.resolve(AtribuiPlanoParaUsuario);
         
-        await atribuiPlanoParaUsuario.executar(usuario);
+        //await atribuiPlanoParaUsuario.executar(usuario);
 
         return usuario;
     }

@@ -6,5 +6,5 @@ export default interface INegociacoesRepository{
     criar(data: ICriarNegociacaoDTO): Promise<Negociacao>;
     acharPorId(id: string): Promise<Negociacao | undefined>;
     acharPorIdConvite(idConvite: string): Promise<Negociacao | undefined>;
-
+    salvar(neg: Negociacao): Promise<Negociacao>;
 }

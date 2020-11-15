@@ -30,6 +30,14 @@ class TrocasJogosRepository implements ITrocasJogosRepository {
 
         return trocaJogo;
     }
+
+    public async acharPorIdTroca(idTroca: string): Promise<TrocaJogo | undefined>{
+        const trocaJogo = await this.ormRepository.findOne({
+            where:{idTroca}
+        });
+
+        return trocaJogo;
+    }
 }
 
 export default TrocasJogosRepository;

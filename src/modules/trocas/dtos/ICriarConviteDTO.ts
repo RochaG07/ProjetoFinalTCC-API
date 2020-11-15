@@ -1,8 +1,7 @@
-import Usuario from "@modules/usuarios/infra/typeorm/entities/Usuario";
-import Troca from "../infra/typeorm/entities/Troca";
 
-export default interface ICriarTrocaDTO{
+export default interface ICriarConviteDTO{
     mensagem?: string,
-    troca: Troca,
-    usuario: Usuario,
+    idTroca: string,
+    idUser_solicitador: string,
+    nome_solicitador: string,
 }

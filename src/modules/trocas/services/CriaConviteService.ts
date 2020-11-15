@@ -55,7 +55,7 @@ class CriaConviteService{
         //Verifica nos convites da troca, se o usuário já mandou um convite retorna um erro
         convitesDaTroca.forEach(conviteDaTroca => {
             if(conviteDaTroca.idUser_solicitador === idUser){
-                errors.push(usuario.nome +" já enviou uma soliciatação para esta troca");
+                errors.push("usuário já enviou uma soliciatação para esta troca");
             }
         });
         if (errors.length > 0) {
@@ -64,8 +64,9 @@ class CriaConviteService{
         
         const convite = await this.convitesRepository.criar({
             mensagem,
-            troca,
-            usuario
+            idTroca: troca.id,
+            idUser_solicitador: usuario.id,
+            nome_solicitador: usuario.nome,
         });
 
         return convite;

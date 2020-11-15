@@ -39,7 +39,13 @@ class Usuario {
     ativo: boolean;
 
     @Column()
+    trocasDisponiveis: number;
+
+    @Column()
     possuiStatusDeAdm: boolean;
+    
+    @Column()
+    idCustomer: string;
 
     @CreateDateColumn()
     dataCriacao: Date;
@@ -55,15 +61,13 @@ class Usuario {
 
         switch(uploadConfig.driver){
             case 'disk':
-                return `${process.env.APP_API_URL}/files/${this.avatar}`;
+                return `${process.env.APP_API_URL}/avatares/${this.avatar}`;
             case 's3':
                 return `$https://${uploadConfig.config.aws.bucket}.s3.amazonaws.com/${this.avatar}`;
             default:
                 return null;
         }
-    }
-
-    
+    }    
 }
 
 export default Usuario;

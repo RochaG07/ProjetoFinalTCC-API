@@ -9,4 +9,5 @@ export default interface IConvitesRepository{
     salvar(convite: Convite): Promise<Convite>;
     acharPorId(id: string): Promise<Convite | undefined>;
     acharTodosDeUmaTroca(troca: Troca): Promise<Convite[]>;
+    acharTodosDeUmIdUser_solicitador(IdUser_solicitador: string): Promise<Convite[]>;
 }

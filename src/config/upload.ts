@@ -12,6 +12,9 @@ interface IUploadConfig {
     tmpFolder: string;
     uploadsFolder: string;
 
+    avataresFolder:string;
+    capasFolder:string;
+
     multer: {
         storage: StorageEngine;
     },
@@ -27,7 +30,11 @@ export default {
     driver: process.env.STORAGE_DRIVER,
 
     tmpFolder,
+    
     uploadsFolder: path.resolve(tmpFolder, 'uploads'),
+
+    avataresFolder: path.resolve(tmpFolder, 'avatares'),
+    capasFolder: path.resolve(tmpFolder, 'capas'),
 
     multer: {
         storage: multer.diskStorage({

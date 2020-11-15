@@ -21,18 +21,12 @@ class Jogo {
     administrador: Administrador
 
     @Expose({ name: 'capa_url' })
-    getCapa_url(): string | null {
-        if (!this.capa){
-            return null;
-        }
-
+    getCapa_url(): string {
         switch(uploadConfig.driver){
             case 'disk':
-                return `${process.env.APP_API_URL}/files/${this.capa}`;
+                return `${process.env.APP_API_URL}/capas/${this.capa}`;
             case 's3':
                 return `$https://${uploadConfig.config.aws.bucket}.s3.amazonaws.com/${this.capa}`;
-            default:
-                return null;
         }
     }
 }

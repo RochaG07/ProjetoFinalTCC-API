@@ -24,6 +24,30 @@ export class CreateTrocas1598839577829 implements MigrationInterface {
                         default: true,
                     },
                     {
+                        name:'nomeJogoOfertado',
+                        type: 'varchar',
+                    },
+                    {
+                        name:'nomeJogoDesejado',
+                        type: 'varchar',
+                    },
+                    {
+                        name:'urlDaCapaJogoOfertado',
+                        type: 'varchar',
+                    },
+                    {
+                        name:'urlDaCapaJogoDesejado',
+                        type: 'varchar',
+                    },
+                    {
+                        name:'nomeConsoleJogoOfertado',
+                        type: 'varchar',
+                    },
+                    {
+                        name:'nomeConsoleJogoDesejado',
+                        type: 'varchar',
+                    },
+                    {
                         name:'dataCriacao',
                         type: 'timestamp',
                         default: 'now()',

@@ -1,4 +1,4 @@
-import { getRepository, Repository} from 'typeorm';
+import { getRepository, Repository, Not} from 'typeorm';
 
 import ITrocasRepository from '../../../repositories/ITrocasRepository';
 import ICriarTrocaDTO from '@modules/trocas/dtos/ICriarTrocaDTO';
@@ -13,10 +13,26 @@ class TrocasRepository implements ITrocasRepository {
         this.ormRepository= getRepository(Troca);
     }
 
-    public async criar({descricao, usuario}: ICriarTrocaDTO): Promise<Troca>{
+    public async criar({
+        descricao,
+        nomeJogoOfertado,
+        nomeJogoDesejado,
+        urlDaCapaJogoOfertado,
+        urlDaCapaJogoDesejado,
+        nomeConsoleJogoOfertado,
+        nomeConsoleJogoDesejado,
+        idUser
+
+    }: ICriarTrocaDTO): Promise<Troca>{
         const troca = this.ormRepository.create({
             descricao,
-            idUser: usuario.id
+            nomeJogoOfertado,
+            nomeJogoDesejado,
+            urlDaCapaJogoOfertado,
+            urlDaCapaJogoDesejado,
+            nomeConsoleJogoOfertado,
+            nomeConsoleJogoDesejado,
+            idUser
         });
 
         await this.ormRepository.save(troca);
@@ -39,6 +55,18 @@ class TrocasRepository implements ITrocasRepository {
         });
 
         return trocas;
+    }
+    public async acharTodosMenosDeUmUsuario(usuario: Usuario): Promise<Troca[]>{
+        //Colocar em um array todas as trocas de um usuário
+        const trocas = await this.ormRepository.find({
+            where:{idUser: Not(usuario.id)}
+        });
+
+        return trocas;
+    }
+
+    public async salvar(troca: Troca): Promise<Troca>{
+        return this.ormRepository.save(troca);
     }
 }
 

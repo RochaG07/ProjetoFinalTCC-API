@@ -11,16 +11,18 @@ import requerStatusAdmin from '@shared/infra/http/middleware/requerStatusAdmin';
 
 const jogosRouter = Router();
 
-jogosRouter.use(requerAutenticacao);
-jogosRouter.use(requerStatusAdmin);
+//jogosRouter.use(requerAutenticacao);
+//jogosRouter.use(requerStatusAdmin);
 
 const consolesController = new ConsolesController();
 const jogosController = new JogosController();
 
 const upload = multer(uploadConfig.multer);
 
-jogosRouter.post('/', upload.single('capa'), jogosController.criar);
+jogosRouter.post('/', requerAutenticacao, requerStatusAdmin, upload.single('capa'), jogosController.criar);
+jogosRouter.get('/', jogosController.exibir);
 
-jogosRouter.post('/consoles', consolesController.criar);
+
+jogosRouter.post('/consoles', requerAutenticacao, requerStatusAdmin, consolesController.criar);
 
 export default jogosRouter;

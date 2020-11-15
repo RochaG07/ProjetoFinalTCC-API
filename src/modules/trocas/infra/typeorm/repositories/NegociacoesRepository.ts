@@ -38,6 +38,11 @@ class NegociacoesRepository implements INegociacoesRepository {
 
         return neg;
     }
+
+    public async salvar(neg: Negociacao): Promise<Negociacao>{
+        return this.ormRepository.save(neg);
+    }
+
 }
 
 export default NegociacoesRepository;

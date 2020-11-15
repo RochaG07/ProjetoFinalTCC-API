@@ -30,10 +30,16 @@ class AtualizaAvatarService{
 
         //Deleta avatar antigo do usuário se tiver algum
         if(usuario.avatar){
-            await this.storageProvider.deletarArquivo(usuario.avatar);
+            await this.storageProvider.deletarArquivo({
+                arquivo: usuario.avatar,
+                pasta: 'avatares',
+            });
         }
 
-        const nomeArquivo = await this.storageProvider.salvarArquivo(avatarNomeArquivo);
+        const nomeArquivo = await this.storageProvider.salvarArquivo({
+            arquivo: avatarNomeArquivo,
+            pasta:'avatares'
+        });
 
         usuario.avatar = nomeArquivo;
 

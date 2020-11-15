@@ -14,16 +14,20 @@ export class CreateConvites1598839571156 implements MigrationInterface {
                         generationStrategy: 'uuid',
                         default: 'uuid_generate_v4()',
                     },
-
                     {
                         name:'mensagem',
                         type: 'varchar',
                         isNullable: true,
                     },
                     {
+                        name:'nome_solicitador',
+                        type: 'varchar',
+                    },
+                    {
                         name:'foiAceito',
                         type: 'boolean',
-                        default: false,
+                        isNullable: true,
+
                     },
                     {
                         name:'dataEnvio',
@@ -31,7 +35,7 @@ export class CreateConvites1598839571156 implements MigrationInterface {
                         default: 'now()',
                     },
                     {
-                        name:'dataAceitacao',
+                        name:'dataResposta',
                         type: 'timestamp',
                         isNullable: true,
                     }

@@ -18,7 +18,10 @@ class Convite {
     dataEnvio: Date;
 
     @CreateDateColumn()
-    dataAceitacao: Date;
+    dataResposta: Date;
+    
+    @Column()
+    nome_solicitador: string;
 
     @Column()
     idUser_solicitador: string;

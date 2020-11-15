@@ -1,6 +1,10 @@
-import Usuario from "@modules/usuarios/infra/typeorm/entities/Usuario";
-
 export default interface ICriarTrocaDTO{
     descricao: string,
-    usuario: Usuario,
+    nomeJogoOfertado: string,
+    nomeJogoDesejado: string,
+    urlDaCapaJogoOfertado: string,
+    urlDaCapaJogoDesejado: string,
+    nomeConsoleJogoOfertado: string,
+    nomeConsoleJogoDesejado: string,
+    idUser: string,
 }

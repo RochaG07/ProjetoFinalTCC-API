@@ -20,6 +20,7 @@
         "esModuleInterop": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
+        "allowSyntheticDefaultImports": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true
     }

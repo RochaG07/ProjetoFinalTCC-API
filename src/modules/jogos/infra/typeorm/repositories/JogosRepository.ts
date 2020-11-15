@@ -27,6 +27,20 @@ class JogosRepository implements IJogosRepository {
 
         return jogo;
     }
+
+    public async acharPorId(id: string): Promise<Jogo | undefined>{
+        const jogo = await this.ormRepository.findOne({
+            where:{id}
+        });
+
+        return jogo;
+    }
+
+    public async getJogos(): Promise<Jogo[]>{
+        const jogos = await this.ormRepository.find();
+
+        return jogos;
+    }
 }
 
 export default JogosRepository;

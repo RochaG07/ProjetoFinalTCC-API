@@ -53,6 +53,19 @@ class UsuariosRepository implements IUsuariosRepository {
 
         return usuario;
     }
+    
+    public async transformaIdEmNome(id: string): Promise<string | undefined>{
+        const usuario = await this.ormRepository.findOne({
+            where:{id}
+        });
+
+        if(usuario !== undefined){
+            return usuario.nome;
+        }
+        else{
+            return undefined;
+        }
+    }
 }
 
 export default UsuariosRepository;
