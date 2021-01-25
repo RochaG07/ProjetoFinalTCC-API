@@ -20,7 +20,7 @@ export default class TrocasController{
             idJogoOfertado,
             idJogoDesejado,
             consoleJogoDesejado,
-            consoleJogoOfertado
+            consoleJogoOfertado,
         });
 
         return response.json(troca);

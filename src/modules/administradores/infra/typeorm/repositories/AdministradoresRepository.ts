@@ -24,7 +24,7 @@ class PlanosRepository implements IAdministradoresRepository {
 
     public async desativaStatusDeAdm(idAdm: string): Promise<void>{
         const administrador = await this.ormRepository.findOne({
-            where:{idAdm}
+            where:{id: idAdm}
         });
 
         if(administrador) {
@@ -36,7 +36,7 @@ class PlanosRepository implements IAdministradoresRepository {
 
     public async acharPorIdAdm(idAdm: string): Promise<Administrador | undefined>{
         const administrador = await this.ormRepository.findOne({
-            where:{idAdm}
+            where:{id: idAdm}
         });
 
         return administrador;

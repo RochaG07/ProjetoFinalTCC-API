@@ -5,3 +5,4 @@ import './CustomerProvider';
 import './ProductProvider';
 import './SubscriptionProvider';
 import './PaymentMethodProvider';
+import './SessionProvider';

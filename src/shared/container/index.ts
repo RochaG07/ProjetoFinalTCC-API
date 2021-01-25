@@ -8,11 +8,8 @@ import './providers';
 import IUsuariosRepository from '@modules/usuarios/repositories/IUsuariosRepository';
 import UsuariosRepository from '@modules/usuarios/infra/typeorm/repositories/UsuariosRepository';
 
-import IPlanosRepository from '@modules/usuarios/repositories/IPlanosRepository';
-import PlanosRepository from '@modules/usuarios/infra/typeorm/repositories/PlanosRepository';
-
-import IUsuariosPlanosRepository from '@modules/usuarios/repositories/IUsuariosPlanosRepository';
-import UsuariosPlanosRepository from '@modules/usuarios/infra/typeorm/repositories/UsuariosPlanosRepository';
+import ITokensUsuariosRespository from '@modules/usuarios/repositories/ITokensUsuariosRepository';
+import TokensUsuariosRepository from '@modules/usuarios/infra/typeorm/repositories/TokensUsuariosRepository';
 
 import IAdministradoresRepository from '@modules/administradores/repositories/IAdministradoresRepository'
 import AdministradoresRepository from '@modules/administradores/infra/typeorm/repositories/AdministradoresRepository';
@@ -41,19 +38,20 @@ import ConvitesRepository from '@modules/trocas/infra/typeorm/repositories/Convi
 import IAvisosRepository from '@modules/administradores/repositories/IAvisosRepository';
 import AvisosRepository from '@modules/administradores/infra/typeorm/repositories/AvisosRepository';
 
+import IPermissoesRepository from '@modules/administradores/repositories/IPermissoesRepository';
+import PermissoesRepository from '@modules/administradores/infra/typeorm/repositories/PermissoesRepository';
+
+import IPermissoesAdministradoresRepository from '@modules/administradores/repositories/IPermissoesAdministradoresRepository';
+import PermissoesAdministradoresRepository from '@modules/administradores/infra/typeorm/repositories/PermissoesAdministradoresRepository';
+
 container.registerSingleton<IUsuariosRepository>(
     'UsuariosRepository',
     UsuariosRepository
 )
 
-container.registerSingleton<IPlanosRepository>(
-    'PlanosRepository',
-    PlanosRepository
-)
-
-container.registerSingleton<IUsuariosPlanosRepository>(
-    'UsuariosPlanosRepository',
-    UsuariosPlanosRepository
+container.registerSingleton<ITokensUsuariosRespository>(
+    'TokensUsuariosRepository',
+    TokensUsuariosRepository
 )
 
 container.registerSingleton<IAdministradoresRepository>(
@@ -100,4 +98,14 @@ container.registerSingleton<IConvitesRepository>(
 container.registerSingleton<IAvisosRepository>(
     'AvisosRepository',
     AvisosRepository
+)
+
+container.registerSingleton<IPermissoesRepository>(
+    'PermissoesRepository',
+    PermissoesRepository
+)
+
+container.registerSingleton<IPermissoesAdministradoresRepository>(
+    'PermissoesAdministradoresRepository',
+    PermissoesAdministradoresRepository
 )

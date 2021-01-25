@@ -5,6 +5,7 @@ declare namespace Express {
         };
         admin:{
             id: string;
+            permissoes: string[];
         };
     }
 }

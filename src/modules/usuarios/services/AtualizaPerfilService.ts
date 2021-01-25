@@ -14,9 +14,8 @@ interface IRequest {
     senha_antiga: string,
     senha: string
     telefone: string,
-    bairro: string,
-    cidade: string,
-    uf: string,
+    municipio: string,
+    estado: string
 }
 
 @injectable()
@@ -28,7 +27,7 @@ class AtualizaPerfilService{
         private hashProvider: IHashProvider,
     ){}
 
-    public async executar({ idUser ,nome, email, senha_antiga, senha, telefone, bairro, cidade, uf }:IRequest):Promise<Usuario> {
+    public async executar({ idUser ,nome, email, senha_antiga, senha, telefone, municipio, estado }:IRequest):Promise<Usuario> {
         const usuario = await this.usuariosRepository.acharPorId(idUser);
         
         if(!usuario){
@@ -44,9 +43,8 @@ class AtualizaPerfilService{
         usuario.nome = nome;
         usuario.email = email;
         usuario.telefone = telefone;
-        usuario.bairro = bairro;
-        usuario.cidade = cidade;
-        usuario.uf = uf;
+        usuario.municipio = municipio;
+        usuario.estado = estado;
 
         if(senha && !senha_antiga){
          throw new AppError('Você precisa informar a senha antiga para definir uma nova');

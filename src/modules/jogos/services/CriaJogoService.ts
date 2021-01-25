@@ -39,15 +39,15 @@ class CriaJogoService{
             throw new AppError('Jogo já registrado');
         }
 
+        await this.storageProvider.salvarArquivo({
+            arquivo: capa,
+            pasta:'capas'
+        });
+
         const jogo = await this.jogosRepository.criar({
             nome,
             capa,
             idAdm
-        });
-
-        await this.storageProvider.salvarArquivo({
-            arquivo: capa,
-            pasta:'capas'
         });
 
         //Pra cada um dos consoles de jogo, cria um registro em jogos_consoles

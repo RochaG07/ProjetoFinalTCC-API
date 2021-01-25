@@ -7,8 +7,10 @@ import ITrocasRepository from '@modules/trocas/repositories/ITrocasRepository';
 import ITrocasJogosRepository from '@modules/trocas/repositories/ITrocasJogosRepository';
 import IJogosRepository from '@modules/jogos/repositories/IJogosRepository';
 import Troca from '../infra/typeorm/entities/Troca';
-import ICustomerProvider from '@modules/usuarios/providers/StripeProviders/CustomerProvider/models/ICustomerProvider';
-import ISubscriptionProvider from '@modules/usuarios/providers/StripeProviders/SubscriptionProvider/models/ISubscriptionProvider';
+
+import AtualizaTrocasDisponiveisService from '@modules/usuarios/services/AtualizaTrocasDisponiveisService';
+
+import { addWeeks } from 'date-fns';
 
 interface IRequest {
     descricao: string,
@@ -30,8 +32,6 @@ class CriaTrocaService{
         private trocasJogosRepository: ITrocasJogosRepository,
         @inject('JogosRepository')
         private jogosRepository: IJogosRepository,
-        @inject('SubscriptionProvider')
-        private subscriptionProvider: ISubscriptionProvider,
     ){}
 
     public async executar({
@@ -43,7 +43,7 @@ class CriaTrocaService{
         consoleJogoDesejado,
     }:IRequest):Promise<Troca> {
         //Verifica se id de usuário é valido
-        const usuario = await this.usuariosRepository.acharPorId(idUser);
+        let usuario = await this.usuariosRepository.acharPorId(idUser);
 
         if(!usuario){
             throw new AppError("Usuário não existe");
@@ -57,25 +57,6 @@ class CriaTrocaService{
             throw new AppError("Jogo inexistente");
         }
 
-        //validar o idCustomer pelo stripe toda vez que uma troca é 
-        //criada por um usuário que tenha um idCustomer não nulo
-        let premiumAtivo = false;
-        if(usuario.idCustomer !== null){
-            //TODO verificar se o customer possui um plano ativo através da API do stripe
-            premiumAtivo = await this.subscriptionProvider.verificarSeAtiva(usuario.idCustomer);
-        }
-
-        if(!premiumAtivo){
-            if(usuario.trocasDisponiveis <= 0){
-                throw new AppError("Trocas disponiveis insuficientes");
-            }
-
-            //Somente consome as trocas disponíveis se usuário não premium
-            usuario.trocasDisponiveis--;
-
-            await this.usuariosRepository.salvar(usuario);
-        }
-
         // Buscar a url da imagem de capa de ambos os jogo 
         // TODO deixar de salvar a url no banco e só expor ela na rota
         const urlDaCapaJogoOfertado = jogoOfertadoNoBD.getCapa_url();
@@ -83,6 +64,31 @@ class CriaTrocaService{
 
         if(!urlDaCapaJogoOfertado || !urlDaCapaJogoDesejado){
             throw new AppError("Capa de jogo inexistente");
+        }
+
+        //TODO
+        if(!/*premiumAtivo*/false){
+            const atualizaTrocasDisponiveis = container.resolve(AtualizaTrocasDisponiveisService);
+
+            let {trocasDisponiveis, proxTrocaDisp} = await atualizaTrocasDisponiveis.executar(usuario);
+
+            if(trocasDisponiveis <= 0){
+                throw new AppError("Trocas disponíveis insuficientes");
+            }
+
+            trocasDisponiveis--;
+
+            //Começa uma nova contagem se ela não existir (usuario antes com 3/3 trocas)
+            if(!proxTrocaDisp){
+                const dataAtual = new Date(Date.now());
+
+                proxTrocaDisp = addWeeks(dataAtual, 1);
+            }
+
+            usuario.trocasDisponiveis = trocasDisponiveis;
+            usuario.proxTrocaDisp = proxTrocaDisp;
+
+            this.usuariosRepository.salvar(usuario);
         }
 
         const troca = await this.trocasRepository.criar({

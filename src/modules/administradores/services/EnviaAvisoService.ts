@@ -9,7 +9,6 @@ import IAdministradoresRepository from '@modules/administradores/repositories/IA
 import Administrador from '@modules/administradores/infra/typeorm/entities/Administrador';
 import IAvisosRepository from '../repositories/IAvisosRepository';
 import Aviso from '../infra/typeorm/entities/Aviso';
-
 interface IRequest{
     username: string,
     titulo: string,

@@ -39,6 +39,12 @@ class ConsolesRepository implements IConsolesRepository {
             return undefined;
         }
     }
+
+    public async getConsoles(): Promise<Console[]>{
+        const consoles = await this.ormRepository.find();
+
+        return consoles;
+    }
 }
 
 export default ConsolesRepository;

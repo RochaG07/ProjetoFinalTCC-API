@@ -6,11 +6,17 @@ import Usuario from '@modules/usuarios/infra/typeorm/entities/Usuario';
 
 import Stripe from 'stripe';
 import AppError from '@shared/errors/AppError';
+import { container } from 'tsyringe';
+
+import PaymentMethodProvider from '../../PaymentMethodProvider/implementations/PaymentMethodProvider';
+interface ITornarPaymentMethodPadrao{
+    paymentMethodId: string,
+    customerId: string,
+}
 
 const stripe = new Stripe( process.env.STRIPE_SECRET_KEY || '', {
     apiVersion: '2020-08-27',
 });
-
 class CustomerProvider implements ICustomerProvider{
     public async cadastrarCustomer(usuario: Usuario): Promise<Stripe.Customer>{
         //Registra um objeto Customer no Stripe com os dados do usuário,
@@ -18,20 +24,19 @@ class CustomerProvider implements ICustomerProvider{
         //Validar premium do usuário com base no customer_id
         //Associar o customer com usuário
 
-        //Método de pagamento são os dados do cartão? 
-        //payment_method em customer representa o id do payment method
-
         let customersExistentes = await stripe.customers.list({email : usuario.email});
 
         if(customersExistentes.data.length){
             throw new AppError("Usuário já é um Customer");
         } else {
+            //const payment_methodProvider = new PaymentMethodProvider();
+            //const payment_method = await payment_methodProvider.criarPaymentMethod(payment_method_token);
+
             const customer = await stripe.customers.create({
                 email: usuario.email,
-                name: usuario.nome,
+                name: usuario.nome,  
             });
 
-            console.log(customer);
             return customer;
         }
     }   
@@ -39,7 +44,6 @@ class CustomerProvider implements ICustomerProvider{
     public async getCustomer(email: string): Promise<Stripe.Customer | undefined>{ 
         let customer;
 
-        // Provavelmente não funciona
         Promise.resolve(
             stripe.customers.list({email})
         ).then(stripeData => {
@@ -50,6 +54,16 @@ class CustomerProvider implements ICustomerProvider{
         console.log(customer);
 
         return customer;
+    }
+    public async tornarPaymentMethodPadrao({customerId, paymentMethodId}: ITornarPaymentMethodPadrao): Promise<void>{ 
+        await stripe.customers.update(
+            customerId,
+            {
+                invoice_settings: {
+                    default_payment_method: paymentMethodId,
+                }
+            }
+          );
     }
 }
 

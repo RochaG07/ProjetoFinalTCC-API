@@ -41,15 +41,11 @@ export class CreateUsuarios1598839537645 implements MigrationInterface {
                         isNullable: true,
                     },
                     {
-                        name:'bairro',
+                        name:'municipio',
                         type: 'varchar'
                     },
                     {
-                        name:'cidade',
-                        type: 'varchar'
-                    },
-                    {
-                        name:'uf',
+                        name:'estado',
                         type: 'varchar'
                     },
                     {

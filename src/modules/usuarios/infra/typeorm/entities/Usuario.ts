@@ -27,13 +27,10 @@ class Usuario {
     telefone: string;
     
     @Column()
-    bairro: string;
+    municipio: string;
 
     @Column()
-    cidade: string;
-
-    @Column()
-    uf: string;
+    estado: string;
 
     @Column()
     ativo: boolean;
@@ -46,6 +43,12 @@ class Usuario {
     
     @Column()
     idCustomer: string;
+
+    @Column()
+    idSubscription: string;
+
+    @CreateDateColumn()
+    proxTrocaDisp: Date | null;
 
     @CreateDateColumn()
     dataCriacao: Date;

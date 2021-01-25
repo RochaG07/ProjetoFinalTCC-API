@@ -7,9 +7,6 @@ class Administrador {
     id: string;
 
     @Column()
-    nivelAcesso: string;
-
-    @Column()
     ativo: boolean;
 
     @Column()

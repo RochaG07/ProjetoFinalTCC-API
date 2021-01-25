@@ -11,8 +11,8 @@ export default class SessoesController{
 
         const autenticaUsuario = container.resolve(AutenticaUsuarioService);
 
-        const {usuario, token} = await autenticaUsuario.executar({username, senha});
+        const {usuario, token, premiumAtivo} = await autenticaUsuario.executar({username, senha});
 
-        return response.json({usuario:classToClass(usuario), token});
+        return response.json({usuario:classToClass(usuario), token, premiumAtivo});
     }
 }

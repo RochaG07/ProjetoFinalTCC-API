@@ -1,7 +1,6 @@
 import Stripe from "stripe";
-import ICriarPaymentMethodDTO from '../dtos/ICriarPaymentMethodDTO';
-
+import { IAtribuirPaymentMethodAoCustomer } from "../dtos/IAtribuirPaymentMethodAoCustomer";
 
 export default interface IPaymentMethodProvider{
-    criarPaymentMethod(data: ICriarPaymentMethodDTO): Promise<Stripe.PaymentMethod>;
+    atribuirPaymentMethodAoCustomer(data: IAtribuirPaymentMethodAoCustomer ): Promise<void>;
 }

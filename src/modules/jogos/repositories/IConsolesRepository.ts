@@ -6,4 +6,5 @@ export default interface IConsoleRepository{
     criar(data: ICriarConsoleDTO): Promise<Console>;
     acharPorNome(nome: string): Promise<Console | undefined>;
     transformaIdConsoleEmNome(idConsole: string): Promise<string | undefined>;
+    getConsoles(): Promise<Console[]>;
 }

@@ -15,11 +15,6 @@ export class CreateAdministradores1598839554862 implements MigrationInterface {
                         default: 'uuid_generate_v4()',
                     },
                     {
-                        name:'nivelAcesso',
-                        type: 'int',
-                        default: 1,
-                    },
-                    {
                         name:'ativo',
                         type: 'boolean',
                         default: true,

@@ -4,7 +4,6 @@ export default interface ICriarUsuarioDTO{
     senha: string,
     nome: string,
     telefone?: string;
-    bairro: string;
-    cidade: string;
-    uf: string;
+    municipio: string;
+    estado: string;
 }

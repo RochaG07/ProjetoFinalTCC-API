@@ -2,8 +2,6 @@ import { injectable, inject, container } from 'tsyringe';
 
 import AppError from '@shared/errors/AppError';
 
-import AtribuiPlanoParaUsuario from './AtribuiPlanoParaUsuario';
-
 import IUsuariosRepository from '../repositories/IUsuariosRepository';
 import IHashProvider from '../providers/HashProvider/models/IHashProvider';
 
@@ -15,9 +13,8 @@ interface IRequest {
     senha: string,
     nome: string,
     telefone?: string;
-    bairro: string; 
-    cidade: string;
-    uf: string;
+    municipio: string; 
+    estado: string;
 }
 
 @injectable()
@@ -29,7 +26,7 @@ class CriaUsuarioService{
         private hashProvider: IHashProvider,
     ){}
 
-    public async executar({username, email, senha, nome, telefone, bairro, cidade, uf }:IRequest):Promise<Usuario> {
+    public async executar({username, email, senha, nome, telefone, municipio, estado }:IRequest):Promise<Usuario> {
         //Não se pode criar um novo usuário com o username repetido
         const usernameContidoBD = await this.usuariosRepository.acharPorUsername(username);
 
@@ -52,15 +49,9 @@ class CriaUsuarioService{
             senha: senhaComHash,
             nome,
             telefone,
-            bairro,
-            cidade,
-            uf
+            municipio,
+            estado
         });
-
-        //Define o plano do usuario recém criado
-        //const atribuiPlanoParaUsuario = container.resolve(AtribuiPlanoParaUsuario);
-        
-        //await atribuiPlanoParaUsuario.executar(usuario);
 
         return usuario;
     }

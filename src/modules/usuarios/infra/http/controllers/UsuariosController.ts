@@ -7,7 +7,7 @@ import CriaUsuarioService from '@modules/usuarios/services/CriaUsuarioService';
 
 export default class UsuariosController{
     public async criar( request: Request, response: Response ):Promise<Response>{
-        const {username, email, senha, nome, telefone, bairro, cidade, uf} = request.body;
+        const {username, email, senha, nome, telefone, municipio, estado} = request.body;
 
         const criaUsuario = container.resolve(CriaUsuarioService);
 
@@ -17,9 +17,8 @@ export default class UsuariosController{
             senha,
             nome,
             telefone,
-            bairro,
-            cidade,
-            uf
+            municipio,
+            estado
         });
 
         return response.json(classToClass(usuario));

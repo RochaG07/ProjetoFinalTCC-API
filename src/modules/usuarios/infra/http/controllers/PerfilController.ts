@@ -19,7 +19,7 @@ export default class SessoesController{
 
     public async atualizar(request: Request, response: Response ):Promise<Response>{
         const idUser = request.user.id;           
-        const { nome, email, senha_antiga, senha, telefone, bairro, cidade, uf, } = request.body;
+        const { nome, email, senha_antiga, senha, telefone, municipio, estado } = request.body;
 
         const atualizaPerfil = container.resolve(AtualizaPerfilService);
     
@@ -30,9 +30,8 @@ export default class SessoesController{
             senha_antiga,
             senha,
             telefone,
-            bairro,
-            cidade,
-            uf,
+            municipio,
+            estado
         });
     
         return response.json(classToClass(usuario));

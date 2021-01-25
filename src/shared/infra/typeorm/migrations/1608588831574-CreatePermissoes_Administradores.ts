@@ -1,11 +1,11 @@
 import {MigrationInterface, QueryRunner, Table} from "typeorm";
 
-export class CreateUsuariosPlanos1599323070597 implements MigrationInterface {
+export class CreatePermissoesAdministradores1608588831574 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.createTable(
             new Table({
-                name: 'usuarios_planos',
+                name: 'permissoes_administradores',
                 columns: [
                     {
                         name: 'id',
@@ -13,26 +13,14 @@ export class CreateUsuariosPlanos1599323070597 implements MigrationInterface {
                         isPrimary: true,
                         generationStrategy: 'uuid',
                         default: 'uuid_generate_v4()',
-                    },
-                    {
-                        name:'dataInicio',
-                        type: 'timestamp',
-                        default: 'now()',
-                    },
-                    {
-                        name:'dataExpiracao',
-                        type: 'timestamp',
-                        isNullable: true,
-                    },
+                    }
                 ]
-            })
+            }),
         );
-        
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.dropTable('usuarios_planos');
+        await queryRunner.dropTable('permissoes_administradores');
     }
 
 }
-
