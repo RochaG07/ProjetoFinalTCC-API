@@ -7,4 +7,6 @@ export default interface ICriarTrocaDTO{
     nomeConsoleJogoOfertado: string,
     nomeConsoleJogoDesejado: string,
     idUser: string,
+    estado: string,
+    municipio: string,
 }

@@ -30,6 +30,12 @@ class Troca {
 
     @Column()
     nomeConsoleJogoDesejado: string;
+
+    @Column()
+    estado: string;
+
+    @Column()
+    municipio: string;
     
     @CreateDateColumn()
     dataCriacao: Date;

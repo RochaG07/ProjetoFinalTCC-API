@@ -100,6 +100,8 @@ class CriaTrocaService{
             urlDaCapaJogoDesejado,
             nomeConsoleJogoOfertado: consoleJogoOfertado,
             nomeConsoleJogoDesejado: consoleJogoDesejado,
+            estado: usuario.estado,
+            municipio: usuario.municipio,
         });
 
         //Registra cada jogo presente em uma troca na tabela trocas_jogos

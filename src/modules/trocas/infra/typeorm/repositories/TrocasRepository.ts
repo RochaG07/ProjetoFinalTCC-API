@@ -13,27 +13,8 @@ class TrocasRepository implements ITrocasRepository {
         this.ormRepository= getRepository(Troca);
     }
 
-    public async criar({
-        descricao,
-        nomeJogoOfertado,
-        nomeJogoDesejado,
-        urlDaCapaJogoOfertado,
-        urlDaCapaJogoDesejado,
-        nomeConsoleJogoOfertado,
-        nomeConsoleJogoDesejado,
-        idUser
-
-    }: ICriarTrocaDTO): Promise<Troca>{
-        const troca = this.ormRepository.create({
-            descricao,
-            nomeJogoOfertado,
-            nomeJogoDesejado,
-            urlDaCapaJogoOfertado,
-            urlDaCapaJogoDesejado,
-            nomeConsoleJogoOfertado,
-            nomeConsoleJogoDesejado,
-            idUser
-        });
+    public async criar(data: ICriarTrocaDTO): Promise<Troca>{
+        const troca = this.ormRepository.create(data);
 
         await this.ormRepository.save(troca);
 
