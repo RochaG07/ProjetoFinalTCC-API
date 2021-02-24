@@ -1,5 +1,4 @@
 //Prepara os respositories para serem injetados como dependencia
-
 import { container } from 'tsyringe';
 
 import '@modules/usuarios/providers';
@@ -43,6 +42,9 @@ import PermissoesRepository from '@modules/administradores/infra/typeorm/reposit
 
 import IPermissoesAdministradoresRepository from '@modules/administradores/repositories/IPermissoesAdministradoresRepository';
 import PermissoesAdministradoresRepository from '@modules/administradores/infra/typeorm/repositories/PermissoesAdministradoresRepository';
+
+import IMensagemChatRepository from '@modules/trocas/repositories/IMensagemChatRepository';
+import MensagemChatRepository from '@modules/trocas/infra/typeorm/repositories/MensagemChatRepository';
 
 container.registerSingleton<IUsuariosRepository>(
     'UsuariosRepository',
@@ -108,4 +110,9 @@ container.registerSingleton<IPermissoesRepository>(
 container.registerSingleton<IPermissoesAdministradoresRepository>(
     'PermissoesAdministradoresRepository',
     PermissoesAdministradoresRepository
+)
+
+container.registerSingleton<IMensagemChatRepository>(
+    'MensagemChatRepository',
+    MensagemChatRepository
 )

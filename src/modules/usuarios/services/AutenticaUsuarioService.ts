@@ -12,7 +12,6 @@ import Usuario from '../infra/typeorm/entities/Usuario';
 import AtualizaTrocasDisponiveisService from '@modules/usuarios/services/AtualizaTrocasDisponiveisService';
 import RetornaAssinaturaService from './RetornaAssinaturaService';
 
-
 interface IRequest {
     username: string,
     senha: string,

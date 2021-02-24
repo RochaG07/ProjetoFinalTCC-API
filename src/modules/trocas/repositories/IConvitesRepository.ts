@@ -1,7 +1,6 @@
 import Convite from '../infra/typeorm/entities/Convite';
 
 import ICriarConviteDTO from '@modules/trocas/dtos/ICriarConviteDTO';
-import Usuario from '@modules/usuarios/infra/typeorm/entities/Usuario';
 import Troca from '../infra/typeorm/entities/Troca';
 
 export default interface IConvitesRepository{

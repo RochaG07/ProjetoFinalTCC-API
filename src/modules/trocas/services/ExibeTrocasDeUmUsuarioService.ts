@@ -8,9 +8,9 @@ import Troca from '../infra/typeorm/entities/Troca';
 import Convite from '../infra/typeorm/entities/Convite';
 import IConvitesRepository from '../repositories/IConvitesRepository';
 
-interface ITrocaComConvites {
+interface IResponse {
     troca: Troca;   
-    convites: Convite[],
+    convitesNaoRespondidos: number;
 }
 
 @injectable()
@@ -24,7 +24,7 @@ class ExibeTrocasDeUmUsuarioService{
         private convitesRepository: IConvitesRepository,
     ){}
 
-    public async executar(idUser : string):Promise<ITrocaComConvites[]> {
+    public async executar(idUser : string):Promise<IResponse[]> {
         //Verifica se id de usuário é valido
         const usuario = await this.usuariosRepository.acharPorId(idUser);
 
@@ -34,14 +34,22 @@ class ExibeTrocasDeUmUsuarioService{
 
         const trocas = await this.trocasRepository.acharTodosDeUmUsuario(usuario);
 
-        const trocasComConvites: ITrocaComConvites[] = [];
+        const trocasComConvites: IResponse[] = [];
 
         for (let i = 0; i < trocas.length; i++) {
             const convites = await this.convitesRepository.acharTodosDeUmaTroca(trocas[i]);
 
+            let convitesNaoRespondidos: number = 0;
+
+            convites.forEach(convite => {
+                if(convite.foiAceito === null){
+                    convitesNaoRespondidos++;
+                }
+            })
+
             trocasComConvites.push({
                 troca: trocas[i],
-                convites,
+                convitesNaoRespondidos,
             })
         }
 

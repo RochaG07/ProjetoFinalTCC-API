@@ -20,6 +20,7 @@ adminRouter.post('/', adminController.criar);
 adminRouter.get('/', adminController.exibir);
 
 adminRouter.post('/avisos', avisoController.criar);
+adminRouter.get('/avisos', avisoController.exibir);
 
 adminRouter.post('/permissoes', permissoesController.criar);
 

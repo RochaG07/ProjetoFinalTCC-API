@@ -24,6 +24,8 @@ interface Ineg{
     troca: Troca,
     nomeUsuarioCriador: string,
     nomeUsuarioSolicitador: string,
+    idUsuarioCriador: string,
+    idUsuarioSolicitador: string
 }
 
 @injectable()
@@ -80,6 +82,8 @@ class ExibeNegociacoesDeUmUsuarioService{
                     troca: trocas[i],
                     nomeUsuarioCriador, 
                     nomeUsuarioSolicitador: convite.nome_solicitador,
+                    idUsuarioCriador: trocas[i].idUser,
+                    idUsuarioSolicitador: convite.idUser_solicitador
                 });
             }
         }
@@ -115,6 +119,8 @@ class ExibeNegociacoesDeUmUsuarioService{
                         troca,
                         nomeUsuarioCriador, 
                         nomeUsuarioSolicitador: convites[i].nome_solicitador,
+                        idUsuarioCriador: troca.idUser,
+                        idUsuarioSolicitador: convites[i].idUser_solicitador
                     });
                 }
             }

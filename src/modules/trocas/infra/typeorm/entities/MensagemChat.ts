@@ -8,6 +8,9 @@ class MensagemChat {
     id: string;
 
     @Column()
+    nomeusuario: string;
+
+    @Column()
     conteudo: string;
     
     @CreateDateColumn()
