@@ -20,7 +20,7 @@ export default function requerAutenticacao(
     const authHeader = request.headers.authorization;
 
     if(!authHeader){
-        throw new AppError('Token JWT não encontrado', 401);
+        throw new AppError('Token JWT não encontrado', 404);
     }
 
     const [, token] = authHeader.split(' ');

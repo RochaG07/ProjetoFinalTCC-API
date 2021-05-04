@@ -6,6 +6,9 @@ import IUsuariosRepository from '@modules/usuarios/repositories/IUsuariosReposit
 import ITrocasRepository from '@modules/trocas/repositories/ITrocasRepository';
 import Troca from '../infra/typeorm/entities/Troca';
 
+import ICacheProvider from '@shared/container/providers/CacheProvider/models/ICacheProvider';
+import { classToClass } from 'class-transformer';
+
 interface IRequest{
     idUser: string,
     estado: string | undefined,
@@ -23,22 +26,40 @@ class ExibeTrocasService{
         private usuariosRepository: IUsuariosRepository,
         @inject('TrocasRepository')
         private trocasRepository: ITrocasRepository,
+        @inject('CacheProvider')
+        private cacheProvider: ICacheProvider
     ){}
 
-    public async executar({idUser, estado, municipio, nomeJogoOfertado, nomeJogoDesejado, nomeConsoleJogoOfertado, nomeConsoleJogoDesejado} : IRequest):Promise<Troca[]> {
+    public async executar({
+        idUser, 
+        estado, 
+        municipio, 
+        nomeJogoOfertado, 
+        nomeJogoDesejado, 
+        nomeConsoleJogoOfertado, 
+        nomeConsoleJogoDesejado
+    } : IRequest):Promise<Troca[]> {
         ///Exibe as trocas do usuário logado juntamente com seus convites
         //Verifica se id de usuário é valido
         const usuario = await this.usuariosRepository.acharPorId(idUser);
 
         if(!usuario){
-            throw new AppError("Usuário não existe");
+            throw new AppError("Usuário não existe", 404);
         }
 
-        let trocas = await this.trocasRepository.acharTodosMenosDeUmUsuario(usuario);
+        let trocas = await this.cacheProvider.recover<Troca[]>(`trocas-disponiveis:${usuario.id}`);
 
-        //A query de municipio depende que as query de estado esteja ativa
+
+        if(!trocas){
+            trocas = await this.trocasRepository.acharTodosMenosDeUmUsuario(usuario);
+            
+            await this.cacheProvider.save(`trocas-disponiveis:${usuario.id}`, classToClass(trocas));
+        }
+
+        //Aplica filtro
         if(estado){
             trocas = trocas.filter(troca => {
+                //A query de municipio depende que as query de estado esteja ativa
                 if(municipio){
                     return (
                         troca.estado === estado &&
@@ -81,7 +102,7 @@ class ExibeTrocasService{
                 }
             });
         }
-
+        
         return trocas;
     }
 }

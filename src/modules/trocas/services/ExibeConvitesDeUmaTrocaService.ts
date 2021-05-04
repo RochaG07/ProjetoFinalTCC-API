@@ -29,19 +29,19 @@ class ExibeConvitesDeUmaTrocaService{
         const usuario = await this.usuariosRepository.acharPorId(idUser);
 
         if(!usuario){
-            throw new AppError("Usuário não existe");
+            throw new AppError("Usuário não existe", 404);
         }
 
         //Verifica se id de troca é valido
         const troca = await this.trocasRepository.acharPorId(idTroca);
         
         if(!troca){
-            throw new AppError("Troca não existe");
+            throw new AppError("Troca não existe", 404);
         }
 
         //verificar o usuário é o criador da troca
         if(troca.idUser != usuario.id){
-            throw new AppError("Troca não pertence ao usuário logado");
+            throw new AppError("Troca não pertence ao usuário logado", 401);
         }
 
         const convites = this.convitesRepository.acharTodosDeUmaTroca(troca);

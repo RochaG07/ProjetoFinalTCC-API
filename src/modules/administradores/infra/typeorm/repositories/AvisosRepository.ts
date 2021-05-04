@@ -27,13 +27,27 @@ class AvisosRepository implements IAvisosRepository {
 
         return aviso;
     }
-    public async exibirTodosDeUsuario(usuario: Usuario): Promise<Aviso[]>{
+
+    public async exibirTodos(idUser: string): Promise<Aviso[]>{
         const avisos = this.ormRepository.find({
-            where:{idUser: usuario.id}
+            where:{idUser}
         });
         
         return avisos;
     }
+
+    public async getAviso(id: string): Promise<Aviso | undefined>{
+        const aviso = this.ormRepository.findOne({
+            where:{id}
+        });
+        
+        return aviso;
+    }
+
+    public async salvar(aviso: Aviso): Promise<Aviso>{
+        return this.ormRepository.save(aviso);
+    }
+
 }
 
 export default AvisosRepository;

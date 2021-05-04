@@ -1,17 +1,9 @@
-import fs from 'fs';
-import path from 'path';
-import uploadConfig from '@config/upload';
-import ISubscriptionProvider from '../models/ISubscriptionProvider';
+import ISubscriptionProvider, {Icriar, Iatualizar} from '../models/ISubscriptionProvider';
 import Stripe from 'stripe';
 
 const stripe = new Stripe( process.env.STRIPE_SECRET_KEY || '', {
     apiVersion: '2020-08-27',
 });
-
-interface Icriar{
-    idCustomer: string
-    paymentMethodId: string
-}
 
 class SubscriptionProvider implements ISubscriptionProvider{
     public async criar({idCustomer, paymentMethodId}: Icriar): Promise<Stripe.Subscription>{
@@ -23,13 +15,36 @@ class SubscriptionProvider implements ISubscriptionProvider{
         });
 
         return subscription;
-    }
+    }    
 
-    public async getSubscription(subscriptionId: string): Promise<Stripe.Subscription>{
-        const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+    public async atualizarCartao({idSubscription, paymentMethodId}: Iatualizar): Promise<Stripe.Subscription>{
+        const subscription = await stripe.subscriptions.update(idSubscription, {
+            default_payment_method: paymentMethodId
+        });
 
         return subscription;
     }
+
+    public async getSubscription(idSubscription: string): Promise<Stripe.Subscription>{
+        const subscription = await stripe.subscriptions.retrieve(idSubscription);
+
+        return subscription;
+    }
+
+    public async cancelaSubscription(idSubscription: string): Promise<void>{
+        await stripe.subscriptions.del(idSubscription);
+    }
+
+    public async retornaUltimoInvoiceId(idSubscription: string): Promise<string | null>{
+        const subscription = await this.getSubscription(idSubscription);
+
+        if(subscription.latest_invoice){
+            return subscription.latest_invoice.toString();
+        }
+
+        return null;
+    }
+    
 }
 
 export default SubscriptionProvider;

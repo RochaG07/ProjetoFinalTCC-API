@@ -28,6 +28,14 @@ class ConsolesRepository implements IConsolesRepository {
         return console;
     }
 
+    public async acharPorId(id: string): Promise<Console | undefined>{
+        const jogo = await this.ormRepository.findOne({
+            where:{id}
+        });
+
+        return jogo;
+    }
+
     public async transformaIdConsoleEmNome(idConsole: string): Promise<string | undefined>{
         const console = await this.ormRepository.findOne({
             where:{id: idConsole}
@@ -44,6 +52,10 @@ class ConsolesRepository implements IConsolesRepository {
         const consoles = await this.ormRepository.find();
 
         return consoles;
+    }
+
+    public async deletarPorId(id: string): Promise<void>{
+        await this.ormRepository.delete(id);
     }
 }
 

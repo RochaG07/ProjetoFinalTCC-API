@@ -2,11 +2,9 @@ import { injectable, inject } from 'tsyringe';
 
 import AppError from '@shared/errors/AppError';
 
-import ISessionProvider from '../providers/StripeProviders/SessionProvider/models/ISessionProvider';
 import IUsuariosRepository from '../repositories/IUsuariosRepository';
 import ICustomerProvider from '../providers/StripeProviders/CustomerProvider/models/ICustomerProvider';
-import Stripe from 'stripe';
-import IPaymentMethodProvider from '../providers/StripeProviders/PaymentMethodProvider/models/IPaymentMethodProvider';
+
 import Usuario from '../infra/typeorm/entities/Usuario';
 
 @injectable()
@@ -22,13 +20,13 @@ class AchaUsuarioPeloCustomerIdService{
         let usuario = await this.usuariosRepository.acharPorId(idUser);
 
         if(!usuario){
-            throw new AppError("Somente usuarios autenticados");
+            throw new AppError("Somente usuarios autenticados", 401);
         }
 
         const customer = await this.customerProvider.getCustomer(usuario.email);
 
         if(!customer){
-            throw new AppError("CustomerId inválido");
+            throw new AppError("CustomerId inválido", 401);
         } 
 
         return usuario;

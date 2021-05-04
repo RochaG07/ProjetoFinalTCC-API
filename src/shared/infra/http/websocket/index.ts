@@ -6,23 +6,31 @@ import { Server, Socket } from "socket.io";
 
 interface IActiveUser {
   socketId: string,
-  idUser: string
+  idUser: string,
+  nome: string
+  presenteNaSala: string | null,
 }
 
-interface IUserInChat {
-  socketId: string,
+interface IChat {
   nome: string,
   idNeg: string,
 }
 
-interface IChat {
-  nomeusuario: string,
-  idNeg: string,
+interface IGerarNotificacao {
+  id: string,
+  idUserAlvo: string, 
+  conteudo: string
 }
 
-interface IUsuariosDasNegsLogados {
-  idUsuario: string,
-  estaLogado: boolean,
+interface IGerarAviso {
+  id: string,
+  idUserAlvo: string, 
+  titulo: string, 
+  conteudo: string
+}
+interface ILogin{
+  idUser: string,
+  nome: string
 }
 
 const app = express();
@@ -35,119 +43,85 @@ const io = new Server(server, {
     methods: ["GET", "POST"]
 }}); 
 
-//const mensagens: MensagemChat[] = [];
-
-let usuarioLogado : IActiveUser | null = null;
-
-let usuariosAtivos: IActiveUser[] = [];
-
-//Variável que contém a lista de usuários em um chat 
-let usuariosEmChat: IUserInChat[] = [];
-
-//Variável que representa o usuário desse socket no chat
-//estará null se o usuário não estiver no chat
-let usuarioNoChat: IUserInChat | null;
+let usuariosLogados: IActiveUser[] = [];
 
 io.on('connection', (socket: Socket) => {
-  //console.log('Socket conectado:'+ socket.id);
+  let usuarioLogado : IActiveUser | null = null;
 
-  socket.on('login', (idUser: string) => {  
-
+  socket.on('login', ({idUser, nome}: ILogin) => {  
     usuarioLogado = {
       socketId: socket.id,
-      idUser
+      presenteNaSala: null,
+      nome,
+      idUser,
     };
 
-    usuariosAtivos.push(usuarioLogado);
-
-    //console.log(usuariosAtivos);
+    usuariosLogados.push(usuarioLogado);
   });
 
-  socket.on('verificar se usuarios estao logados', (idsUsuario: string[]) => {  
-    const usuariosDasNegsLogados: IUsuariosDasNegsLogados[] = [];
-    
-    idsUsuario.forEach(idUsuario => {
-      let estaLogado = false;
+  ///Notificações
+  socket.on('apresentar nova notificacao', ({id, idUserAlvo, conteudo}: IGerarNotificacao) => {
+    const usuarioAlvo =  usuariosLogados.find(usuario => (idUserAlvo === usuario.idUser));
 
-      //Verifica se o id de usuário está na lista de usuários logados 
-      usuariosAtivos.forEach(usuario => {
-        if(usuario.idUser === idUsuario){
-          estaLogado = true;
-        }
-      })
-      
-      usuariosDasNegsLogados.push({
-        idUsuario,
-        estaLogado
-      })
-    })
-  
-    socket.emit('lista de usuarios ativos das negociacoes', usuariosDasNegsLogados);
+    if(usuarioAlvo){
+      socket.to(usuarioAlvo.socketId).emit('enviar notificacao', {id, conteudo});
+    }
   });
 
-  socket.on('disconnect', () => {
-    //console.log('Socket desconectado:'+ socket.id);
-    
-    //const usuarioDesconectado = usuariosAtivos.find(usuario => (socket.id === usuario.socketId));
+  ///Avisos
+  socket.on('apresentar novo aviso', ({id, idUserAlvo, titulo, conteudo}: IGerarAviso) => {
+    const usuarioAlvo =  usuariosLogados.find(usuario => (idUserAlvo === usuario.idUser));
 
-    console.log('disconnect');
-    console.log(usuarioLogado);
+    if(usuarioAlvo){
+      socket.to(usuarioAlvo.socketId).emit('enviar aviso', {id, titulo, conteudo});
+    }
+  });
+
+  ///Chat
+  socket.on('abrir chat', async({ nome, idNeg}: IChat) => {
+    socket.join(idNeg);
 
     if(usuarioLogado){
-      usuariosAtivos = usuariosAtivos.filter(usuario => (usuario !== usuarioLogado));
+      usuariosLogados = usuariosLogados.filter(usuario => (usuario !== usuarioLogado));
 
-      console.log(usuariosAtivos);
+      usuarioLogado = {
+        ...usuarioLogado,
+        presenteNaSala: idNeg,
+      };
 
-      usuarioLogado = null;
+      usuariosLogados.push(usuarioLogado);
+        
+      const usuariosFiltrados = usuariosLogados.filter(usuario => (
+        usuario.presenteNaSala === idNeg
+      ));     
+
+      socket.emit('usuarios na sala', usuariosFiltrados);
+
+      socket.to(idNeg).emit('add nome do usuario na sala', {
+        nome, 
+        socketId: usuarioLogado.socketId
+      });
     }
   });
-})
 
-const chat = io.of('/chat');
+  socket.on('fechar chat', ({nome, idNeg}: IChat) => {
+    socket.leave(idNeg);
 
-//const criarMensagem = container.resolve(CriaMensagemChatService);
-//const exibeMensagens = container.resolve(ExibeMensagensChatDeUmaNegociacaoService);
+    if(usuarioLogado){
+      usuariosLogados = usuariosLogados.filter(usuario => (usuario !== usuarioLogado));
 
-chat.on('connection', (socket: Socket) => {
-  //console.log('Socket chat conectado:'+ socket.id);
+      usuarioLogado = {
+        ...usuarioLogado,
+        presenteNaSala: null,
+      };
 
-  socket.on('abrir chat', async(data: IChat) => {
-    socket.join(data.idNeg);
+      usuariosLogados.push(usuarioLogado);
 
-    /*
-    usuarioNoChat = {
-      socketId: socket.id,
-      idNegociacao: data.idNegociacao,
-      nome: data.nomeUsuario
+      socket.to(idNeg).emit('remove nome do usuario na sala', {
+        nome, 
+        socketId: usuarioLogado.socketId
+      });
     }
-
-    console.log(usuariosAtivos);
-
-    usuariosEmChat.push(usuarioNoChat);
-
-    //socket.emit('usuarios na sala', usuariosEmChat.filter(usuario => (usuario.idNegociacao === data.idNegociacao)));
-
-    socket.to(data.idNegociacao).emit('usuario entrou', usuarioNoChat); 
-    */
-  });
-
-  socket.on('fechar chat', (data: IChat) => {
-    socket.leave(data.idNeg);
-
-    /*
-    if(usuarioNoChat){
-      //Remove o usuário da lista de usuarios em chat
-      usuariosEmChat = usuariosEmChat.filter(usuario => (
-        usuario !== usuarioNoChat
-      ));
-
-      //Emite para os usuarios que estão na mesma sala
-      //que o usuário que saiu
-      socket.to(usuarioNoChat.idNegociacao).emit('usuario saiu', usuarioNoChat);
-
-      usuarioNoChat = null;
-    }
-    */
   });
 
   socket.on('enviar mensagem', async(data: MensagemChat) => {
@@ -155,26 +129,13 @@ chat.on('connection', (socket: Socket) => {
   });
 
   socket.on('disconnect', () => {
-    //console.log('Socket chat desconectado:'+ socket.id);
-    /*
-    if(usuarioNoChat){
+    if(usuarioLogado){
+      usuariosLogados = usuariosLogados.filter(usuario => (usuario !== usuarioLogado));
 
-      //Remove o usuário da lista de usuarios em chat
-      usuariosEmChat = usuariosEmChat.filter(usuario => (
-        usuario !== usuarioNoChat
-      ));
-
-      //Emite para os usuarios que estão na mesma sala
-      //que o usuário que saiu
-      socket.to(usuarioNoChat.idNegociacao).emit('usuario saiu', usuarioNoChat);
-
-      usuarioNoChat = null;
+      usuarioLogado = null;
     }
-    */
   });
 
-
-});
-
+})
 
 export default server;

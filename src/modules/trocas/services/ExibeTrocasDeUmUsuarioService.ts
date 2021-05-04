@@ -7,8 +7,10 @@ import ITrocasRepository from '@modules/trocas/repositories/ITrocasRepository';
 import Troca from '../infra/typeorm/entities/Troca';
 import Convite from '../infra/typeorm/entities/Convite';
 import IConvitesRepository from '../repositories/IConvitesRepository';
+import ICacheProvider from '@shared/container/providers/CacheProvider/models/ICacheProvider';
+import { classToClass } from 'class-transformer';
 
-interface IResponse {
+interface ITrocaComConvite {
     troca: Troca;   
     convitesNaoRespondidos: number;
 }
@@ -22,35 +24,46 @@ class ExibeTrocasDeUmUsuarioService{
         private trocasRepository: ITrocasRepository,
         @inject('ConvitesRepository')
         private convitesRepository: IConvitesRepository,
+        @inject('CacheProvider')
+        private cacheProvider: ICacheProvider 
     ){}
 
-    public async executar(idUser : string):Promise<IResponse[]> {
+    public async executar(idUser : string):Promise<ITrocaComConvite[]> {
         //Verifica se id de usuário é valido
         const usuario = await this.usuariosRepository.acharPorId(idUser);
 
         if(!usuario){
-            throw new AppError("Usuário não existe");
+            throw new AppError("Usuário não existe", 404);
         }
 
         const trocas = await this.trocasRepository.acharTodosDeUmUsuario(usuario);
 
-        const trocasComConvites: IResponse[] = [];
+        let trocasComConvites = await this.cacheProvider.recover<ITrocaComConvite[]>(`minhas-trocas:${usuario.id}`);
 
-        for (let i = 0; i < trocas.length; i++) {
-            const convites = await this.convitesRepository.acharTodosDeUmaTroca(trocas[i]);
+        if(!trocasComConvites){
+            const trocasComConvitesTemp: ITrocaComConvite[] = [];
 
-            let convitesNaoRespondidos: number = 0;
+            for (let i = 0; i < trocas.length; i++) {
+                const convites = await this.convitesRepository.acharTodosDeUmaTroca(trocas[i]);
+    
+                let convitesNaoRespondidos: number = 0;
+    
+                convites.forEach(convite => {
+                    if(convite.foiAceito === null){
+                        convitesNaoRespondidos++;
+                    }
+                })
+    
+                trocasComConvitesTemp.push({
+                    troca: trocas[i],
+                    convitesNaoRespondidos,
+                })
 
-            convites.forEach(convite => {
-                if(convite.foiAceito === null){
-                    convitesNaoRespondidos++;
-                }
-            })
+            }
 
-            trocasComConvites.push({
-                troca: trocas[i],
-                convitesNaoRespondidos,
-            })
+            trocasComConvites = trocasComConvitesTemp;
+
+            await this.cacheProvider.save(`minhas-trocas:${usuario.id}`, classToClass(trocasComConvites));
         }
 
         return trocasComConvites;

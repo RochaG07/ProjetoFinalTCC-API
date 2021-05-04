@@ -14,7 +14,7 @@ export default class SessoesController{
 
         const usuario = await exibePerfil.executar({idUser});
 
-        return response.json(classToClass(usuario));
+        return response.status(200).json(classToClass(usuario));
     }
 
     public async atualizar(request: Request, response: Response ):Promise<Response>{
@@ -34,6 +34,6 @@ export default class SessoesController{
             estado
         });
     
-        return response.json(classToClass(usuario));
+        return response.status(200).json(classToClass(usuario));
     }
 }

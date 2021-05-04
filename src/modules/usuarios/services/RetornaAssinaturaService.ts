@@ -2,13 +2,11 @@ import { injectable, inject } from 'tsyringe';
 
 import AppError from '@shared/errors/AppError';
 
-import ISessionProvider from '../providers/StripeProviders/SessionProvider/models/ISessionProvider';
 import IUsuariosRepository from '../repositories/IUsuariosRepository';
-import ICustomerProvider from '../providers/StripeProviders/CustomerProvider/models/ICustomerProvider';
 import Stripe from 'stripe';
-import IPaymentMethodProvider from '../providers/StripeProviders/PaymentMethodProvider/models/IPaymentMethodProvider';
-import Usuario from '../infra/typeorm/entities/Usuario';
+
 import ISubscriptionProvider from '../providers/StripeProviders/SubscriptionProvider/models/ISubscriptionProvider';
+import IPremiumRepository from '../repositories/IPremiumRepository';
 
 @injectable()
 class RetornaAssinaturaService{
@@ -17,25 +15,31 @@ class RetornaAssinaturaService{
         private usuariosRepository: IUsuariosRepository,
         @inject('SubscriptionProvider')
         private subscriptionProvider: ISubscriptionProvider,
-        @inject('CustomerProvider')
-        private customerProvider: ICustomerProvider,
+        @inject('PremiumRepository')
+        private premiumRepository: IPremiumRepository,
     ){}
     
     public async executar(idUser: string):Promise<Stripe.Subscription> {
         let usuario = await this.usuariosRepository.acharPorId(idUser);
 
         if(!usuario){
-            throw new AppError("Somente usuarios autenticados");
+            throw new AppError("Somente usuarios autenticados", 401);
         }
 
-        if(!usuario.idSubscription){
-            throw new AppError("Usuário não possui assinatura");
+        let premium = await this.premiumRepository.acharPorIdUser(usuario.id);
+
+        if(!premium){
+            throw new AppError("Premium não encontrado", 404);
         }
 
-        const subscription = await this.subscriptionProvider.getSubscription(usuario.idSubscription);
+        if(!premium.idSubscription){
+            throw new AppError("Usuário não possui assinatura", 401);
+        }
 
-        if(usuario.idCustomer !== subscription.customer){
-            throw new AppError("Assinatura não pertence ao usuário");
+        const subscription = await this.subscriptionProvider.getSubscription(premium.idSubscription);
+
+        if(premium.idCustomer !== subscription.customer){
+            throw new AppError("Assinatura não pertence ao usuário", 401);
         }
 
         return subscription;

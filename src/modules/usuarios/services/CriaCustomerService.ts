@@ -2,18 +2,11 @@ import { injectable, inject } from 'tsyringe';
 
 import AppError from '@shared/errors/AppError';
 
-import ISessionProvider from '../providers/StripeProviders/SessionProvider/models/ISessionProvider';
 import IUsuariosRepository from '../repositories/IUsuariosRepository';
 import ICustomerProvider from '../providers/StripeProviders/CustomerProvider/models/ICustomerProvider';
+
+import IPremiumRepository from '../repositories/IPremiumRepository';
 import Stripe from 'stripe';
-import IPaymentMethodProvider from '../providers/StripeProviders/PaymentMethodProvider/models/IPaymentMethodProvider';
-import Usuario from '../infra/typeorm/entities/Usuario';
-
-/*
-    1º -> Cria o customer com os dados do usuário em CriaCustomerService
-    2º -> Atribui o payment method e faz a assinatura em CriaSubscriptionService
-
-*/
 
 @injectable()
 class CriaCustomerService{
@@ -22,22 +15,26 @@ class CriaCustomerService{
         private usuariosRepository: IUsuariosRepository,
         @inject('CustomerProvider')
         private customerProvider: ICustomerProvider,
+        @inject('PremiumRepository')
+        private premiumRepository: IPremiumRepository,
     ){}
     
-    public async executar(idUser: string):Promise<Usuario> {
+    public async executar(idUser: string):Promise<Stripe.Customer> {
         let usuario = await this.usuariosRepository.acharPorId(idUser);
 
         if(!usuario){
-            throw new AppError("Somente usuarios autenticados");
+            throw new AppError("Somente usuarios autenticados", 401);
         }
 
         const customer = await this.customerProvider.cadastrarCustomer(usuario);
 
-        usuario.idCustomer = customer.id;
+        let premium = await this.premiumRepository.acharPorIdUser(usuario.id);
 
-        this.usuariosRepository.salvar(usuario);
+        if(!premium){
+            throw new AppError("Premium não encontrado", 404);
+        }
 
-        return usuario;
+        return customer;
     }
 }
 

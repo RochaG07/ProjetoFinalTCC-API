@@ -13,7 +13,7 @@ export default class NegociacoesController{
 
         const negs = await exibeNegociacoes.executar(idUser);
 
-        return response.json(negs);
+        return response.status(200).json(negs);
     }
 
     public async desativar(request: Request, response: Response ):Promise<Response>{
@@ -24,6 +24,6 @@ export default class NegociacoesController{
 
         await desativaNegociacao.executar({idUser, idNeg});
 
-        return response.json('sucesso');
+        return response.status(204).json('sucesso');
     }
 }

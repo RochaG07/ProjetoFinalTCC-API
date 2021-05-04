@@ -20,10 +20,8 @@ class ResetaSenhaService {
     constructor (
         @inject('UsuariosRepository')
         private usuariosRepository: IUsuariosRepository,
-
         @inject('HashProvider')
         private hashProvider: IHashProvider,
-        
         @inject('TokensUsuariosRepository')
         private tokensUsuariosRepository: ITokensUsuariosRepository,
     ){}
@@ -32,20 +30,20 @@ class ResetaSenhaService {
         const usuarioToken = await this.tokensUsuariosRepository.acharPorToken(token);
 
         if (!usuarioToken) {
-            throw new AppError('Token do usuário não existe');
+            throw new AppError('Token do usuário não existe', 404);
         }
 
         const usuario = await this.usuariosRepository.acharPorId(usuarioToken.idUser)
 
         if (!usuario) {
-            throw new AppError('Usuário não existe');
+            throw new AppError('Usuário não existe', 404);
         }
 
         const tokenDataCriacao = usuarioToken.dataCriacao;
         const compararData = addHours(tokenDataCriacao, 2);
 
         if(isAfter(Date.now(), compararData)) {
-            throw new AppError('Token expired.');
+            throw new AppError('Token expired.', 401);
         }
 
         usuario.senha = await this.hashProvider.generateHash(senha);

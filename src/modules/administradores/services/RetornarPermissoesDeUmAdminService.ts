@@ -22,7 +22,7 @@ class RetornarPermissoesDeUmAdminService{
         const admin = await this.administradoresRepository.acharPorIdAdm(idAdm);
 
         if(!admin){
-            throw new AppError('Admin não existe');
+            throw new AppError('Admin não existe', 404);
         }
 
         const idsPermissao = await this.permissoesAdministradoresRepository.retornaIdsPermissaoDeUmAdmin(idAdm);

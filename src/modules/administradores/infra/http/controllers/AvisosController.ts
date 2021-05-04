@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import { container } from 'tsyringe';
 
 import EnviaAvisoService from '@modules/administradores/services/EnviaAvisoService';
-import ExibeAvisoService from '@modules/administradores/services/ExibeAvisoService';
+import DesativaAvisoService from '@modules/administradores/services/DesativaAvisoService';
 import AppError from '@shared/errors/AppError';
 
 export default class AvisosController{
@@ -11,7 +11,7 @@ export default class AvisosController{
         const {username, titulo, conteudo} = request.body;
 
         if(!request.admin.permissoes.includes('enviar_avisos')){
-            throw new AppError("Erro: Admin não possui permissão para enviar avisos");
+            throw new AppError("Erro: Admin não possui permissão para enviar avisos", 401);
         }
 
         const enviaAviso = container.resolve(EnviaAvisoService);
@@ -23,16 +23,16 @@ export default class AvisosController{
             idAdm: request.admin.id,
         });
 
-        return response.json(aviso);
+        return response.status(201).json(aviso);
     }
 
-    public async exibir( request: Request, response: Response ):Promise<Response>{
-        const idUser = request.user.id;
+    public async desativar( request: Request, response: Response ):Promise<Response>{
+        const {idAviso} = request.params;
 
-        const exibeAviso = container.resolve(ExibeAvisoService);
+        const desativaAviso = container.resolve(DesativaAvisoService);
 
-        const aviso = await exibeAviso.executar(idUser);
+        await desativaAviso.executar({idAviso});
 
-        return response.json(aviso);
+        return response.status(204).json();
     }
 }

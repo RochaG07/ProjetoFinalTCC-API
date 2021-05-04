@@ -18,8 +18,10 @@ const upload = multer(uploadConfig.multer);
 
 jogosRouter.post('/', requerAutenticacao, requerStatusAdmin, upload.single('capa'), jogosController.criar);
 jogosRouter.get('/', jogosController.exibir);
+jogosRouter.delete('/:idJogo', requerAutenticacao, requerStatusAdmin, jogosController.deletar);
 
 jogosRouter.post('/consoles', requerAutenticacao, requerStatusAdmin, consolesController.criar);
 jogosRouter.get('/consoles', consolesController.exibir);
+jogosRouter.delete('/consoles/:idConsole', requerAutenticacao, requerStatusAdmin, consolesController.deletar);
 
 export default jogosRouter;

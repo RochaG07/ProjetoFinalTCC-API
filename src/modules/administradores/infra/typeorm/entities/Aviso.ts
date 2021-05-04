@@ -17,6 +17,9 @@ class Aviso {
     dataEnvio: Date;
 
     @Column()
+    ativo: boolean;
+
+    @Column()
     idAdm: string;
     @ManyToOne(() => Administrador)
     @JoinColumn({name: 'idAdm'})

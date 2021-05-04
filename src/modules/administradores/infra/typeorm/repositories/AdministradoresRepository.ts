@@ -22,16 +22,8 @@ class PlanosRepository implements IAdministradoresRepository {
         return administrador;
     }
 
-    public async desativaStatusDeAdm(idAdm: string): Promise<void>{
-        const administrador = await this.ormRepository.findOne({
-            where:{id: idAdm}
-        });
-
-        if(administrador) {
-            administrador.ativo = false;
-
-            await this.ormRepository.save(administrador);
-        }
+    public async salvar(adm: Administrador): Promise<Administrador>{
+        return this.ormRepository.save(adm);
     }
 
     public async acharPorIdAdm(idAdm: string): Promise<Administrador | undefined>{

@@ -2,55 +2,40 @@ import { injectable, inject } from 'tsyringe';
 
 import AppError from '@shared/errors/AppError';
 
-import ISessionProvider from '../providers/StripeProviders/SessionProvider/models/ISessionProvider';
 import IUsuariosRepository from '../repositories/IUsuariosRepository';
 import ICustomerProvider from '../providers/StripeProviders/CustomerProvider/models/ICustomerProvider';
-import Stripe from 'stripe';
 import IPaymentMethodProvider from '../providers/StripeProviders/PaymentMethodProvider/models/IPaymentMethodProvider';
+import IPremiumRepository from '../repositories/IPremiumRepository';
 
 
 interface IRequest {
-    idUser: string,
+    idCustomer: string,
     paymentMethodId: string,
 }
 
 @injectable()
 class AtribuiPaymentMethodAoCustomerService{
     constructor(
-        @inject('UsuariosRepository')
-        private usuariosRepository: IUsuariosRepository,
         @inject('CustomerProvider')
         private customerProvider: ICustomerProvider,
         @inject('PaymentMethodProvider')
         private paymentMethodProvider: IPaymentMethodProvider,
     ){}
     
-    public async executar({idUser, paymentMethodId}: IRequest):Promise<void> {
-        let usuario = await this.usuariosRepository.acharPorId(idUser);
-
-        if(!usuario){
-            throw new AppError("Somente usuarios autenticados");
-        }
-
-        if(!usuario.idCustomer){
-            throw new AppError('Usuário não é um customer');
+    public async executar({paymentMethodId, idCustomer}: IRequest):Promise<void> {
+        if(!idCustomer){
+            throw new AppError('Usuário não é um customer', 401);
         } 
 
-        this.paymentMethodProvider.atribuirPaymentMethodAoCustomer({
-            customerId: usuario.idCustomer,
+        await this.paymentMethodProvider.atribuirPaymentMethodAoCustomer({
+            idCustomer,
             paymentMethodId,
         })
-        .then(() => {
-            if(!usuario){
-                throw new AppError("Somente usuarios autenticados");
-            }
-
-            this.customerProvider.tornarPaymentMethodPadrao({
-                customerId: usuario.idCustomer,
-                paymentMethodId,
-            })
+    
+        await this.customerProvider.tornarPaymentMethodPadrao({
+            idCustomer,
+            paymentMethodId,
         })
-
     }
 }
 

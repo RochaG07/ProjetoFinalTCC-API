@@ -23,7 +23,7 @@ class CriaConsoleService{
         const consoleExiste = await this.consolesRepository.acharPorNome(nome);
 
         if (consoleExiste){
-            throw new AppError('Console já registrado');
+            throw new AppError('Console já registrado', 406);
         }
 
         const console = await this.consolesRepository.criar({

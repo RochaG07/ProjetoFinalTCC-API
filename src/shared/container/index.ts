@@ -46,6 +46,13 @@ import PermissoesAdministradoresRepository from '@modules/administradores/infra/
 import IMensagemChatRepository from '@modules/trocas/repositories/IMensagemChatRepository';
 import MensagemChatRepository from '@modules/trocas/infra/typeorm/repositories/MensagemChatRepository';
 
+import IPremiumRepository from '@modules/usuarios/repositories/IPremiumRepository';
+import PremiumRepository from '@modules/usuarios/infra/typeorm/repositories/PremiumRepository';
+
+import INotificacoesRepository from '@modules/usuarios/repositories/INotificacoesRepository';
+import NotificacoesRepository from '@modules/usuarios/infra/typeorm/repositories/NotificacoesRepository';
+
+
 container.registerSingleton<IUsuariosRepository>(
     'UsuariosRepository',
     UsuariosRepository
@@ -116,3 +123,14 @@ container.registerSingleton<IMensagemChatRepository>(
     'MensagemChatRepository',
     MensagemChatRepository
 )
+
+container.registerSingleton<IPremiumRepository>(
+    'PremiumRepository',
+    PremiumRepository
+)
+
+container.registerSingleton<INotificacoesRepository>(
+    'NotificacoesRepository',
+    NotificacoesRepository
+)
+

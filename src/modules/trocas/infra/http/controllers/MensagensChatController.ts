@@ -16,7 +16,7 @@ export default class MensagensChatController{
             idNeg,
             nomeusuario
         });
-        return response.json(mensagem);
+        return response.status(201).json(mensagem);
     }
 
     public async exibir(request: Request, response: Response ):Promise<Response>{
@@ -26,6 +26,6 @@ export default class MensagensChatController{
 
         const mensagens = await exibeMensagensChatDeUmaNegociacao.executar(idNeg);
 
-        return response.json(mensagens);
+        return response.status(200).json(mensagens);
     }
 }

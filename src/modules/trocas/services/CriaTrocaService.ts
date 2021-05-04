@@ -10,7 +10,9 @@ import Troca from '../infra/typeorm/entities/Troca';
 
 import AtualizaTrocasDisponiveisService from '@modules/usuarios/services/AtualizaTrocasDisponiveisService';
 
-import { addWeeks } from 'date-fns';
+import { addWeeks, isBefore } from 'date-fns';
+import ICacheProvider from '@shared/container/providers/CacheProvider/models/ICacheProvider';
+import IPremiumRepository from '@modules/usuarios/repositories/IPremiumRepository';
 
 interface IRequest {
     descricao: string,
@@ -32,6 +34,10 @@ class CriaTrocaService{
         private trocasJogosRepository: ITrocasJogosRepository,
         @inject('JogosRepository')
         private jogosRepository: IJogosRepository,
+        @inject('PremiumRepository')
+        private premiumRepository: IPremiumRepository,
+        @inject('CacheProvider')
+        private cacheProvider: ICacheProvider
     ){}
 
     public async executar({
@@ -46,7 +52,7 @@ class CriaTrocaService{
         let usuario = await this.usuariosRepository.acharPorId(idUser);
 
         if(!usuario){
-            throw new AppError("Usuário não existe");
+            throw new AppError("Usuário não existe", 404);
         }
 
         //Verifica se os jogos são válidos
@@ -54,26 +60,37 @@ class CriaTrocaService{
         const jogoDesejadoNoBD = await this.jogosRepository.acharPorId(idJogoDesejado);
 
         if(!jogoOfertadoNoBD || !jogoDesejadoNoBD){
-            throw new AppError("Jogo inexistente");
+            throw new AppError("Jogo inexistente", 404);
         }
 
-        // Buscar a url da imagem de capa de ambos os jogo 
-        // TODO deixar de salvar a url no banco e só expor ela na rota
-        const urlDaCapaJogoOfertado = jogoOfertadoNoBD.getCapa_url();
-        const urlDaCapaJogoDesejado = jogoDesejadoNoBD.getCapa_url();
+        const capaJogoOfertado = jogoOfertadoNoBD.capa;
+        const capaJogoDesejado = jogoDesejadoNoBD.capa;
 
-        if(!urlDaCapaJogoOfertado || !urlDaCapaJogoDesejado){
-            throw new AppError("Capa de jogo inexistente");
+        let deveCobrarTrocasDisponiveis = true;
+
+        const premium = await this.premiumRepository.acharPorIdUser(usuario.id);
+
+        if(premium){
+            if(premium.status === 'ativo'){
+                deveCobrarTrocasDisponiveis = false;
+            }
+            else if(premium.status === 'cancelado' && premium.dataExpiracao){
+                const dataAtual = new Date(Date.now());
+
+                //Verifica se a data de expiração já expirou
+                if(isBefore(dataAtual, premium.dataExpiracao)){
+                    deveCobrarTrocasDisponiveis = false;
+                }
+            }
         }
-
-        //TODO
-        if(!/*premiumAtivo*/false){
+        
+        if(deveCobrarTrocasDisponiveis){
             const atualizaTrocasDisponiveis = container.resolve(AtualizaTrocasDisponiveisService);
 
             let {trocasDisponiveis, proxTrocaDisp} = await atualizaTrocasDisponiveis.executar(usuario);
 
             if(trocasDisponiveis <= 0){
-                throw new AppError("Trocas disponíveis insuficientes");
+                throw new AppError("Trocas disponíveis insuficientes", 401);
             }
 
             trocasDisponiveis--;
@@ -96,12 +113,13 @@ class CriaTrocaService{
             idUser: usuario.id,
             nomeJogoOfertado: jogoOfertadoNoBD.nome,
             nomeJogoDesejado: jogoDesejadoNoBD.nome,
-            urlDaCapaJogoOfertado,
-            urlDaCapaJogoDesejado,
+            capaJogoOfertado,
+            capaJogoDesejado,
             nomeConsoleJogoOfertado: consoleJogoOfertado,
             nomeConsoleJogoDesejado: consoleJogoDesejado,
             estado: usuario.estado,
             municipio: usuario.municipio,
+            username: usuario.username
         });
 
         //Registra cada jogo presente em uma troca na tabela trocas_jogos
@@ -113,6 +131,10 @@ class CriaTrocaService{
             troca,
             jogo: jogoDesejadoNoBD
         });
+        
+        this.cacheProvider.invalidatePrefix(`trocas-disponiveis`);
+
+        this.cacheProvider.invalidate(`minhas-trocas:${usuario.id}`);
 
         return troca;    
     }

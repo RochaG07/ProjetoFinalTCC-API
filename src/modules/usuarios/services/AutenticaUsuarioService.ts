@@ -11,6 +11,9 @@ import Usuario from '../infra/typeorm/entities/Usuario';
 
 import AtualizaTrocasDisponiveisService from '@modules/usuarios/services/AtualizaTrocasDisponiveisService';
 import RetornaAssinaturaService from './RetornaAssinaturaService';
+import IPremiumRepository from '../repositories/IPremiumRepository';
+import AutenticaPremiumService from './AutenticaPremiumService';
+import { classToClass } from 'class-transformer';
 
 interface IRequest {
     username: string,
@@ -21,6 +24,8 @@ interface IResponse {
     usuario: Usuario,
     token: string,
     premiumAtivo: boolean,
+    premiumExpiracao: Date | undefined,
+    statusPremium: string,
 }
 
 @injectable()
@@ -28,6 +33,8 @@ class AutenticaUsuarioService {
     constructor(
         @inject('UsuariosRepository')
         private usuariosRepository: IUsuariosRepository,
+        @inject('PremiumRepository')
+        private premiumRepository: IPremiumRepository,
         @inject('HashProvider')
         private hashProvider: IHashProvider,
     ){}
@@ -54,17 +61,26 @@ class AutenticaUsuarioService {
         usuario.trocasDisponiveis = trocasDisponiveis;
         usuario.proxTrocaDisp = proxTrocaDisp;
 
+        let premium = await this.premiumRepository.acharPorIdUser(usuario.id);
+
+        if(!premium){
+            throw new AppError("Premium não encontrado", 401);
+        }
+
         let premiumAtivo = false;
 
         //Checa se premium é valido
-        if(usuario.idSubscription){
-            const retornaAssinatura = container.resolve(RetornaAssinaturaService);
+        if(premium.status === 'ativo' && premium.dataExpiracao){
 
-            const subscription = await retornaAssinatura.executar(usuario.id);
+            const autenticaPremium = container.resolve(AutenticaPremiumService);
 
-            //TODO só verificar validade se o current_period_end já passou,
+            await autenticaPremium.executar({
+                dataExpiracao: premium.dataExpiracao,
+                premium,
+            });
 
-            if(subscription.status === 'active'){
+            //Status continua ativo após verificação
+            if(premium.status === 'ativo'){
                 premiumAtivo = true;
             }
         }
@@ -80,6 +96,8 @@ class AutenticaUsuarioService {
             usuario,
             token,
             premiumAtivo,
+            statusPremium: premium.status,
+            premiumExpiracao: premium.dataExpiracao
         };
     }
 

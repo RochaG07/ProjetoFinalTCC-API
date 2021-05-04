@@ -1,13 +1,8 @@
-import { injectable, inject, container } from 'tsyringe';
-
-import AppError from '@shared/errors/AppError';
-
-import Jogo from '@modules/jogos/infra/typeorm/entities/Jogo';
+import { injectable, inject } from 'tsyringe';
 
 import IConsolesRepository from '@modules/jogos/repositories/IConsolesRepository';
 import IJogosRepository from '@modules/jogos/repositories/IJogosRepository';
 import IJogosConsolesRepository from '@modules/jogos/repositories/IJogosConsolesRepository';
-import IStorageProvider from '@shared/container/providers/StorageProvider/models/IStorageProvider';
 
 interface IJogoComConsoles{
     id: string,

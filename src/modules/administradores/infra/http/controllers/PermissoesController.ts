@@ -10,13 +10,13 @@ export default class PermissoesController{
         const { permissoes, nomeAdmRecebedorDaPermissao} = request.body;
 
         if(!request.admin.permissoes.includes('add_permissoes')){
-            throw new AppError("Erro: Admin não possui permissão para adicionar permissões a outro admins");
+            throw new AppError("Erro: Admin não possui permissão para adicionar permissões a outro admins", 401);
         }
 
         const adicionarPermissoesAoAdmin = container.resolve(AdicionarPermissoesAoAdminService);
 
         const adm = await adicionarPermissoesAoAdmin.executar({nomeAdmRecebedorDaPermissao, permissoesAdd: permissoes });
 
-        return response.json(adm);
+        return response.status(201).json(adm);
     }
 }

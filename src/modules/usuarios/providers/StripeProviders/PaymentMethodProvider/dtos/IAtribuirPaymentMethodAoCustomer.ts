@@ -1,4 +1,4 @@
 export interface IAtribuirPaymentMethodAoCustomer{
-    customerId: string,
+    idCustomer: string,
     paymentMethodId: string,
 }

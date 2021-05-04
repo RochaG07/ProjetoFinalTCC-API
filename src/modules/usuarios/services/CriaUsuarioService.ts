@@ -6,6 +6,7 @@ import IUsuariosRepository from '../repositories/IUsuariosRepository';
 import IHashProvider from '../providers/HashProvider/models/IHashProvider';
 
 import Usuario from '../infra/typeorm/entities/Usuario';
+import IPremiumRepository from '../repositories/IPremiumRepository';
 
 interface IRequest {
     username: string,
@@ -22,6 +23,8 @@ class CriaUsuarioService{
     constructor(
         @inject('UsuariosRepository')
         private usuariosRepository: IUsuariosRepository,
+        @inject('PremiumRepository')
+        private premiumRepository: IPremiumRepository,
         @inject('HashProvider')
         private hashProvider: IHashProvider,
     ){}
@@ -31,14 +34,14 @@ class CriaUsuarioService{
         const usernameContidoBD = await this.usuariosRepository.acharPorUsername(username);
 
         if(usernameContidoBD) {
-            throw new AppError('nao se pode criar um novo usuario com o username repetido');  
+            throw new AppError('Não se pode criar um novo usuario com o username repetido', 401);  
         }
  
         //Não se pode criar um novo usuário com o email repetido
         const emailContidoBD = await this.usuariosRepository.acharPorEmail(email);
 
         if(emailContidoBD) {
-            throw new AppError('nao se pode criar um novo usuario com o email repetido');
+            throw new AppError('Não se pode criar um novo usuario com o email repetido', 401);
         }
 
         const senhaComHash = await this.hashProvider.generateHash(senha);
@@ -52,6 +55,8 @@ class CriaUsuarioService{
             municipio,
             estado
         });
+
+        await this.premiumRepository.criar(usuario.id);
 
         return usuario;
     }

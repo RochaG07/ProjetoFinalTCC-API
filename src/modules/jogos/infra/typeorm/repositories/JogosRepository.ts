@@ -41,6 +41,10 @@ class JogosRepository implements IJogosRepository {
 
         return jogos;
     }
+
+    public async deletarPorId(id: string): Promise<void>{
+        await this.ormRepository.delete(id);
+    }
 }
 
 export default JogosRepository;

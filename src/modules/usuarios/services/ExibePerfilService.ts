@@ -21,7 +21,7 @@ class ExibePerfilService{
         const usuario = await this.usuariosRepository.acharPorId(idUser);
 
         if(!usuario){
-            throw new AppError("Usuário inexistente");
+            throw new AppError("Usuário inexistente", 404);
         }
 
         return usuario;

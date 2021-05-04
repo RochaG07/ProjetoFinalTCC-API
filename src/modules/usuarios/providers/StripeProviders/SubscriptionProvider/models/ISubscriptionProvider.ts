@@ -1,9 +1,16 @@
 import Stripe from "stripe";
-interface Icriar{
+export interface Icriar{
     idCustomer: string
+    paymentMethodId: string
+}
+export interface Iatualizar{
+    idSubscription: string
     paymentMethodId: string
 }
 export default interface ISubscriptionProvider{
     criar({idCustomer, paymentMethodId}: Icriar): Promise<Stripe.Subscription>;
-    getSubscription(subscriptionId: string): Promise<Stripe.Subscription>;
+    atualizarCartao({idSubscription, paymentMethodId}: Iatualizar): Promise<Stripe.Subscription>;
+    retornaUltimoInvoiceId(idSubscription: string): Promise<string | null>;
+    getSubscription(idSubscription: string): Promise<Stripe.Subscription>;
+    cancelaSubscription(idSubscription: string): Promise<void>;
 }

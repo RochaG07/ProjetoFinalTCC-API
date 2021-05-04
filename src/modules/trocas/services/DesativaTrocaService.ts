@@ -12,6 +12,7 @@ import DesativaNegociacaoService from './DesativaNegociacaoService';
 
 import Convite from '../infra/typeorm/entities/Convite';
 import Negociacao from '../infra/typeorm/entities/Negociacao';
+import ICacheProvider from '@shared/container/providers/CacheProvider/models/ICacheProvider';
 
 interface IRequest{
     idUser: string,
@@ -21,23 +22,21 @@ interface IRequest{
 @injectable()
 class DesativaTrocaService{
     constructor(
-        @inject('UsuariosRepository')
-        private usuariosRepository: IUsuariosRepository,
-        @inject('NegociacoesRepository')
-        private negociacoesRepository: INegociacoesRepository,
         @inject('TrocasRepository')
         private trocasRepository: ITrocasRepository,
+        @inject('CacheProvider')
+        private cacheProvider: ICacheProvider
     ){}
 
     public async executar({idUser, idTroca}: IRequest):Promise<void> {
         let troca = await this.trocasRepository.acharPorId(idTroca);
 
         if(!troca){
-            throw new AppError('Troca não encontrada');
+            throw new AppError('Troca não encontrada', 404);
         }
 
         if(!troca.ativo){
-            throw new AppError('Troca já foi desativada');
+            throw new AppError('Troca já foi desativada', 401);
         }
         
         //Desativa negociações da troca
@@ -54,6 +53,10 @@ class DesativaTrocaService{
                 });
             }
         });
+
+        this.cacheProvider.invalidate(`minhas-trocas:${idUser}`);
+
+        this.cacheProvider.invalidatePrefix(`trocas-disponiveis`);
 
         troca.ativo = false;
 

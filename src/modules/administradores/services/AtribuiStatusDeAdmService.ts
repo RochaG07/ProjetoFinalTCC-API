@@ -1,11 +1,10 @@
-import { injectable, inject, container } from 'tsyringe';
+import { injectable, inject } from 'tsyringe';
 
 import AppError from '@shared/errors/AppError';
 
 import IUsuariosRepository from '@modules/usuarios/repositories/IUsuariosRepository';
 import IAdministradoresRepository from '@modules/administradores/repositories/IAdministradoresRepository';
 
-//import Usuario from '@modules/usuarios/infra/typeorm/entities/Usuario';
 import Administrador from '@modules/administradores/infra/typeorm/entities/Administrador';
 
 @injectable()
@@ -21,17 +20,28 @@ class AtribuiStatusDeAdmService{
         const usuario = await this.usuariosRepository.acharPorUsername(username);
 
         if(!usuario) {
-            throw new AppError('Usuário inexistente');  
+            throw new AppError('Usuário inexistente', 404);  
         }
 
-        if(usuario.possuiStatusDeAdm){
-            throw new AppError('Usuário já possui status de admin');  
+        let adm = await this.administradoresRepository.acharPorIdUser(usuario.id);
+
+        if(!adm){
+            //Usuário sem admin prévio, cria novo
+        
+            adm = await this.administradoresRepository.atribuiStatusDeAdm(usuario); 
+        } else {
+            //Usuário já tem admin, reativar
+
+            if(adm.ativo){
+                throw new AppError('Status de adm já ativo', 406);  
+            }
+    
+            adm.ativo = true;
+            this.administradoresRepository.salvar(adm);
         }
 
         usuario.possuiStatusDeAdm = true;
         this.usuariosRepository.salvar(usuario);
- 
-        const adm = await this.administradoresRepository.atribuiStatusDeAdm(usuario);
 
         return adm;
     }

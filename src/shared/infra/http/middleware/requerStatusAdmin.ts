@@ -18,7 +18,7 @@ export default async function requerStatusAdmin(
     const admin = await adminRepo.acharPorIdUser(request.user.id);
 
     if(!admin){
-        throw new AppError("O usuário não é um administrador");
+        throw new AppError("O usuário não é um administrador", 401);
     } 
 
     const permissoesDeUmAdmin = container.resolve(RetornarPermissoesDeUmAdminService);

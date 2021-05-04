@@ -25,7 +25,7 @@ class AtualizaAvatarService{
         const usuario = await this.usuariosRepository.acharPorId(idUser);
 
         if(!usuario){
-            throw new AppError("Somente usuarios autenticados podem alterar avatar");
+            throw new AppError("Somente usuarios autenticados podem alterar avatar", 401);
         }
 
         //Deleta avatar antigo do usuário se tiver algum

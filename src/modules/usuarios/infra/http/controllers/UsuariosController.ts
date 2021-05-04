@@ -21,6 +21,6 @@ export default class UsuariosController{
             estado
         });
 
-        return response.json(classToClass(usuario));
+        return response.status(201).json(classToClass(usuario));
     }
 }

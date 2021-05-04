@@ -37,7 +37,7 @@ class AtualizaPerfilService{
         const userComEmailAtualizado = await this.usuariosRepository.acharPorEmail(email);
 
         if(userComEmailAtualizado && userComEmailAtualizado.id !== usuario.id){
-            throw new AppError('E-mail já em uso');
+            throw new AppError('E-mail já em uso', 401);
         }
 
         usuario.nome = nome;
@@ -47,7 +47,7 @@ class AtualizaPerfilService{
         usuario.estado = estado;
 
         if(senha && !senha_antiga){
-         throw new AppError('Você precisa informar a senha antiga para definir uma nova');
+         throw new AppError('Você precisa informar a senha antiga para definir uma nova', 401);
         }
         
         if(senha && senha_antiga){
@@ -57,7 +57,7 @@ class AtualizaPerfilService{
             );
 
             if(!checaSenhaAntiga){
-                throw new AppError('Senha inválida');
+                throw new AppError('Senha inválida', 401);
             }
 
             usuario.senha = await this.hashProvider.generateHash(senha);

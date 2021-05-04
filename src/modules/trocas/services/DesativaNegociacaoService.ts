@@ -9,6 +9,8 @@ import INegociacoesRepository from '@modules/trocas/repositories/INegociacoesRep
 
 import Convite from '../infra/typeorm/entities/Convite';
 import Negociacao from '../infra/typeorm/entities/Negociacao';
+import ICacheProvider from '@shared/container/providers/CacheProvider/models/ICacheProvider';
+import IConvitesRepository from '../repositories/IConvitesRepository';
 
 interface IRequest{
     idUser: string,
@@ -18,24 +20,41 @@ interface IRequest{
 @injectable()
 class DesativaNegociacaoService{
     constructor(
-        @inject('UsuariosRepository')
-        private usuariosRepository: IUsuariosRepository,
+        @inject('ConvitesRepository')
+        private convitesRepository: IConvitesRepository,
         @inject('NegociacoesRepository')
         private negociacoesRepository: INegociacoesRepository,
+        @inject('CacheProvider')
+        private cacheProvider: ICacheProvider
     ){}
 
     public async executar({idUser, idNeg}: IRequest):Promise<void> {
         let neg = await this.negociacoesRepository.acharPorId(idNeg);
 
         if(!neg){
-            throw new AppError('Negociação não encontrada');
+            throw new AppError('Negociação não encontrada', 404);
         }
 
         if(!neg.ativo){
-            throw new AppError('Negociação já desativada');
+            throw new AppError('Negociação já desativada', 401);
         }
 
         neg.ativo = false;
+
+        console.log();
+
+        const convite = await this.convitesRepository.acharPorId(neg.idConvite);
+
+        if(!convite){
+            throw new AppError('Convite não encontrado', 404);
+        }
+
+        console.log(idUser);
+        console.log(convite.idUser_solicitador);
+
+
+        this.cacheProvider.invalidate(`minhas-negociacoes:${idUser}`);
+        this.cacheProvider.invalidate(`minhas-negociacoes:${convite.idUser_solicitador}`);
 
         this.negociacoesRepository.salvar(neg);
     }

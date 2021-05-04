@@ -5,9 +5,7 @@ import AppError from '@shared/errors/AppError';
 
 import IAdministradoresRepository from '@modules/administradores/repositories/IAdministradoresRepository';
 
-//import Usuario from '@modules/usuarios/infra/typeorm/entities/Usuario';
 import Administrador from '@modules/administradores/infra/typeorm/entities/Administrador';
-import Permissao from '../infra/typeorm/entities/Permissao';
 import IPermissoesRepository from '../repositories/IPermissoesRepository';
 import IPermissoesAdministradoresRepository from '../repositories/IPermissoesAdministradoresRepository';
 import RetornarPermissoesDeUmAdminService from './RetornarPermissoesDeUmAdminService';
@@ -37,20 +35,17 @@ class AdicionarPermissoesAoAdminService{
     ){}
 
     public async executar({nomeAdmRecebedorDaPermissao, permissoesAdd}: IRequest):Promise<IResponse> {
-
         const usuario = await this.usuariosRepository.acharPorUsername(nomeAdmRecebedorDaPermissao);
 
         if(!usuario){
-            throw new AppError('nome do usuário admin não existe');
+            throw new AppError('nome do usuário admin não existe', 404);
         }
 
         const admin = await this.administradoresRepository.acharPorIdUser(usuario.id);
 
         if(!admin){
-            throw new AppError('Admin não existe');
+            throw new AppError('Admin não existe', 404);
         }
-
-        console.log(nomeAdmRecebedorDaPermissao+' | '+ permissoesAdd);
 
         for (let i = 0; i < permissoesAdd.length; i++) {
             const permissao = await this.permissoesRepository.acharPorNome(permissoesAdd[i]);

@@ -3,7 +3,7 @@ import Usuario from '@modules/usuarios/infra/typeorm/entities/Usuario';
 
 export default interface IAdministradoresRepository{
     atribuiStatusDeAdm(usuario: Usuario): Promise<Administrador>;
-    desativaStatusDeAdm(idAdm: string): Promise<void>;
+    salvar(adm: Administrador): Promise<Administrador>;
     acharPorIdAdm(idAdm: string): Promise<Administrador | undefined>;
     acharPorIdUser(idUser: string): Promise<Administrador | undefined>;
 }

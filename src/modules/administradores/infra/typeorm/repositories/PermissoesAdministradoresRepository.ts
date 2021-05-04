@@ -32,6 +32,13 @@ class PermissoesAdministradoresRepository implements IPermissoesAdministradoresR
         
         return permissoesAdm.map(permissaoAdm => (permissaoAdm.idPerm));
     }
+
+    public async deletarTodasDeUmAdm(idAdm: string): Promise<void>{
+        await this.ormRepository.delete({
+            idAdm
+        })
+    }
+
 }
 
 export default PermissoesAdministradoresRepository;

@@ -18,10 +18,8 @@ class EnviaEmailEsqueciMinhaSenhaService {
     constructor (
         @inject('UsuariosRepository')
         private usuariosRepository: IUsuariosRepository,
-
         @inject('MailProvider')
         private mailProvider: IMailProvider,
-        
         @inject('TokensUsuariosRepository')
         private tokensUsuariosRepository: ITokensUsuariosRepository,
     ){}
@@ -30,7 +28,7 @@ class EnviaEmailEsqueciMinhaSenhaService {
         const usuario = await this.usuariosRepository.acharPorEmail(email);
 
         if(!usuario){
-            throw new AppError('Usuário não existe');
+            throw new AppError('Usuário não existe', 404);
         }
 
         const { token } = await this.tokensUsuariosRepository.gerar(usuario.id);

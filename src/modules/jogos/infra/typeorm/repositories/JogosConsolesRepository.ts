@@ -28,6 +28,19 @@ class JogosConsolesRepository implements IJogosConsolesRepository {
         return consoles.map( console => (console.idConsole));
     };
 
+    public async deletarPorIdJogo(idJogo: string): Promise<void>{
+        await this.ormRepository.delete({
+            idJogo
+        });
+    }
+
+    
+    public async deletarPorIdConsole(idConsole: string): Promise<void>{
+        await this.ormRepository.delete({
+            idConsole
+        });
+    }
+
 }
 
 export default JogosConsolesRepository;

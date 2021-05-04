@@ -33,14 +33,14 @@ class ExibeNegociacoesDeUmaTrocaService{
         const usuario = await this.usuariosRepository.acharPorId(idUser);
 
         if(!usuario){
-            throw new AppError("Usuário não existe");
+            throw new AppError("Usuário não existe", 404);
         }
 
         //Verifica se id de troca é valido
         const troca = await this.trocasRepository.acharPorId(idTroca);
         
         if(!troca){
-            throw new AppError("Troca não existe");
+            throw new AppError("Troca não existe", 404);
         }
 
         //Quais convites foram direcionados à troca

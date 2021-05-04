@@ -7,6 +7,8 @@ import ExibeTrocas from '@modules/trocas/services/ExibeTrocasService';
 import ExibeTrocasDeUmUsuario from '@modules/trocas/services/ExibeTrocasDeUmUsuarioService';
 import DesativaTroca from '@modules/trocas/services/DesativaTrocaService';
 
+import { classToClass } from 'class-transformer';
+
 export default class TrocasController{
     public async criar(request: Request, response: Response ):Promise<Response>{
         const idUser = request.user.id;
@@ -23,7 +25,7 @@ export default class TrocasController{
             consoleJogoOfertado,
         });
 
-        return response.json(troca);
+        return response.status(201).json(classToClass(troca));
     }
 
     public async exibir(request: Request, response: Response ):Promise<Response>{
@@ -48,7 +50,7 @@ export default class TrocasController{
 
         const exibeTrocas = container.resolve(ExibeTrocas);
 
-        const troca = await exibeTrocas.executar({
+        const trocas = await exibeTrocas.executar({
             idUser, 
             estado, 
             municipio, 
@@ -58,7 +60,7 @@ export default class TrocasController{
             nomeConsoleJogoDesejado
         });
 
-        return response.json(troca);
+        return response.status(200).json(classToClass(trocas));
     }
 
     public async exibirDoUsuario(request: Request, response: Response ):Promise<Response>{
@@ -68,7 +70,7 @@ export default class TrocasController{
 
         const troca = await exibeTrocas.executar(idUser);
 
-        return response.json(troca);
+        return response.status(200).json(classToClass(troca));
     }
 
     public async desativar(request: Request, response: Response ):Promise<Response>{
@@ -79,6 +81,6 @@ export default class TrocasController{
 
         await desativaTroca.executar({idUser, idTroca});
 
-        return response.json('sucesso');
+        return response.status(204).json();
     }
 }

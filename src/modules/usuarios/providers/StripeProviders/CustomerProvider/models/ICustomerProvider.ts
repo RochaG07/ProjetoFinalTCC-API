@@ -1,13 +1,13 @@
 import Usuario from "@modules/usuarios/infra/typeorm/entities/Usuario";
 import Stripe from "stripe";
 
-interface ITornarPaymentMethodPadrao{
+export interface ITornarPaymentMethodPadrao{
     paymentMethodId: string,
-    customerId: string,
+    idCustomer: string,
 }
 
 export default interface ICustomerProvider {
     cadastrarCustomer(usuario: Usuario): Promise<Stripe.Customer>;
-    getCustomer(email: string): Promise<Stripe.Customer | undefined>;
-    tornarPaymentMethodPadrao(data: ITornarPaymentMethodPadrao): Promise<void>;
+    getCustomer(idCustomer: string): Promise<Stripe.Customer | Stripe.DeletedCustomer>;
+    tornarPaymentMethodPadrao({idCustomer, paymentMethodId}: ITornarPaymentMethodPadrao): Promise<void>;
 }

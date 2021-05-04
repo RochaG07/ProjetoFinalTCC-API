@@ -1,12 +1,9 @@
-import { injectable, inject, container } from 'tsyringe';
+import { injectable, inject } from 'tsyringe';
 
 import AppError from '@shared/errors/AppError';
 
 import IUsuariosRepository from '@modules/usuarios/repositories/IUsuariosRepository';
-import IAdministradoresRepository from '@modules/administradores/repositories/IAdministradoresRepository';
 
-//import Usuario from '@modules/usuarios/infra/typeorm/entities/Usuario';
-import Administrador from '@modules/administradores/infra/typeorm/entities/Administrador';
 import IAvisosRepository from '../repositories/IAvisosRepository';
 import Aviso from '../infra/typeorm/entities/Aviso';
 interface IRequest{
@@ -21,8 +18,6 @@ class EnviaAvisoService{
     constructor(
         @inject('UsuariosRepository')
         private usuariosRepository: IUsuariosRepository,
-        @inject('AdministradoresRepository')
-        private administradoresRepository: IAdministradoresRepository,
         @inject('AvisosRepository')
         private avisosRepository: IAvisosRepository,
     ){}
@@ -31,7 +26,7 @@ class EnviaAvisoService{
         const usuario = await this.usuariosRepository.acharPorUsername(username);
 
         if(!usuario) {
-            throw new AppError('Usuário inexistente');  
+            throw new AppError('Usuário inexistente', 404);  
         }
 
         const aviso = await this.avisosRepository.criar({usuario, titulo, conteudo, idAdm});

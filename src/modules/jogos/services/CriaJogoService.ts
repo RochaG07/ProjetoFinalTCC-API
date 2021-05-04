@@ -21,13 +21,10 @@ class CriaJogoService{
     constructor(
         @inject('ConsolesRepository')
         private consolesRepository: IConsolesRepository,
-
         @inject('JogosRepository')
         private jogosRepository: IJogosRepository,
-
         @inject('JogosConsolesRepository')
         private jogosConsolesRepository: IJogosConsolesRepository,
-
         @inject('StorageProvider')
         private storageProvider: IStorageProvider,
     ){}
@@ -36,7 +33,7 @@ class CriaJogoService{
         const jogoExiste = await this.jogosRepository.acharPorNome(nome);
 
         if (jogoExiste){
-            throw new AppError('Jogo já registrado');
+            throw new AppError('Jogo já registrado', 406);
         }
 
         await this.storageProvider.salvarArquivo({

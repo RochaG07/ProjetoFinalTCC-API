@@ -14,6 +14,6 @@ export default class ResetaSenhaController {
             senha
         });
     
-        return response.status(204).json();
+        return response.status(201).json();
     }
 }

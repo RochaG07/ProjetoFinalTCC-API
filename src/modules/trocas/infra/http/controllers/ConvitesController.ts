@@ -4,7 +4,7 @@ import { container } from 'tsyringe';
 
 import CriaConviteService from '@modules/trocas/services/CriaConviteService';
 import ExibeConvitesDeUmaTrocaService from '@modules/trocas/services/ExibeConvitesDeUmaTrocaService';
-import AceitaConviteService from '@modules/trocas/services/AceitaConviteService';
+import RespondeConviteService from '@modules/trocas/services/RespondeConviteService';
 
 export default class ConvitesController{
     public async criar(request: Request, response: Response ):Promise<Response>{
@@ -13,13 +13,16 @@ export default class ConvitesController{
 
         const criaConvite = container.resolve(CriaConviteService);
 
-        const convite = await criaConvite.executar({
+        const {convite, troca} = await criaConvite.executar({
             mensagem,
             idTroca,
             idUser
         });
 
-        return response.json(convite);
+        return response.status(201).json({
+            convite, 
+            troca
+        });
     }
 
     public async exibir(request: Request, response: Response ):Promise<Response>{
@@ -30,7 +33,7 @@ export default class ConvitesController{
 
         const convite = await exibeConvites.executar({idUser, idTroca});
 
-        return response.json(convite);
+        return response.status(200).json(convite);
     }
 
 
@@ -38,14 +41,14 @@ export default class ConvitesController{
         const { idConvite, respostaAoConvite } = request.body;
         const idUser = request.user.id;
 
-        const aceitaConvite = container.resolve(AceitaConviteService);
+        const respondeConvite = container.resolve(RespondeConviteService);
 
-        const convite = await aceitaConvite.executar({
+        const convite = await respondeConvite.executar({
             idConvite,
             idUser,
             respostaAoConvite
         });
 
-        return response.json(convite);
+        return response.status(200).json(convite);
     }
 }

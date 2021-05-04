@@ -1,3 +1,4 @@
+import ICacheProvider from '@shared/container/providers/CacheProvider/models/ICacheProvider';
 import { injectable, inject } from 'tsyringe';
 import MensagemChat from '../infra/typeorm/entities/MensagemChat';
 
@@ -7,11 +8,19 @@ import IMensagemChatRepository from '../repositories/IMensagemChatRepository';
 class ExibeMensagensChatDeUmaNegociacaoService{
     constructor(
         @inject('MensagemChatRepository')
-        private mensagemChatRepository: IMensagemChatRepository
+        private mensagemChatRepository: IMensagemChatRepository,
+        @inject('CacheProvider')
+        private cacheProvider: ICacheProvider
     ){}
 
     public async executar(idNeg: string):Promise<MensagemChat[]> {
-        const mensagens = this.mensagemChatRepository.exibirDeUmaNegociacao(idNeg);
+        let mensagens = await this.cacheProvider.recover<MensagemChat[]>(`mensagens-chat:${idNeg}`);
+
+        if(!mensagens){
+            mensagens = await this.mensagemChatRepository.exibirDeUmaNegociacao(idNeg);
+
+            await this.cacheProvider.save(`mensagens-chat:${idNeg}`, mensagens);
+        }
 
         return mensagens;
     }

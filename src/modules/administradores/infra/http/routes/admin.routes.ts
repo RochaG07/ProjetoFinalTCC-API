@@ -18,9 +18,10 @@ const permissoesController = new PermissoesController();
 
 adminRouter.post('/', adminController.criar);
 adminRouter.get('/', adminController.exibir);
+adminRouter.delete('/:username', adminController.deletar);
 
 adminRouter.post('/avisos', avisoController.criar);
-adminRouter.get('/avisos', avisoController.exibir);
+adminRouter.delete('/avisos/:idAviso', avisoController.desativar);
 
 adminRouter.post('/permissoes', permissoesController.criar);
 

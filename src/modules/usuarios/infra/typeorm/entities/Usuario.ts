@@ -23,8 +23,8 @@ class Usuario {
     @Column()
     nome: string;
 
-    @Column()
-    telefone: string;
+    @Column({nullable: true})
+    telefone?: string;
     
     @Column()
     municipio: string;
@@ -40,12 +40,6 @@ class Usuario {
 
     @Column()
     possuiStatusDeAdm: boolean;
-    
-    @Column()
-    idCustomer: string;
-
-    @Column()
-    idSubscription: string;
 
     @CreateDateColumn()
     proxTrocaDisp: Date | null;
@@ -66,7 +60,7 @@ class Usuario {
             case 'disk':
                 return `${process.env.APP_API_URL}/avatares/${this.avatar}`;
             case 's3':
-                return `$https://${uploadConfig.config.aws.bucket}.s3.amazonaws.com/${this.avatar}`;
+                return `$https://${uploadConfig.config.aws.bucket}.s3.amazonaws.com/avatares/${this.avatar}`;
             default:
                 return null;
         }
