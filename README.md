@@ -35,19 +35,19 @@ O backend do projeto foi desenvolvido utilizando as seguintes tecnologias:
 
 ## Modelo entidade-relacionamento
 
-<img src='https://github.com/RochaG07/ProjetoFinalTCC-API/tree/master/media/ModeloBanco_v9.jpg'>
+<img src='https://github.com/RochaG07/ProjetoFinalTCC-API/master/media/ModeloBanco_v9.jpg'>
 
 ---
 
 ## Diagrama de classes
 
-<img src='https://github.com/RochaG07/ProjetoFinalTCC-API/tree/master/media/DiagramaDeClassAtualizado.jpg'>
+<img src='https://github.com/RochaG07/ProjetoFinalTCC-API/master/media/DiagramaDeClassAtualizado.jpg'>
 
 ---
 
 ## Processos de negócio
 
-<img src='https://github.com/RochaG07/ProjetoFinalTCC-API/tree/master/media/Processos_de_negócio_v2.jpg'>
+<img src='https://github.com/RochaG07/ProjetoFinalTCC-API/master/media/Processos_de_negócio_v2.jpg'>
 
 ---
 
