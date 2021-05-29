@@ -47,7 +47,7 @@ O backend do projeto foi desenvolvido utilizando as seguintes tecnologias:
 
 ## Processos de negócio
 
-<img src='https://raw.githubusercontent.com/ProjetoFinalTCC-API/master/media/Processos_de_negócio_v2.jpg'>
+<img src='https://raw.githubusercontent.com/RochaG07/ProjetoFinalTCC-API/master/media/Processos_de_neg%C3%B3cio_v2.png'>
 
 ---
 
