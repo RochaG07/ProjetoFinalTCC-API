@@ -55,7 +55,7 @@ O backend do projeto foi desenvolvido utilizando as seguintes tecnologias:
 
 - Módulo usuário
 
-*/usuarios:* POST | Criação de uma nova conta
+**/usuarios** POST | Criação de uma nova conta
 ```json
 {
     "name": "user1",
@@ -64,21 +64,20 @@ O backend do projeto foi desenvolvido utilizando as seguintes tecnologias:
 }
 ```
 
-*/usuarios/avatar:* PATCH | 
+**/usuarios/avatar** PATCH | Atualização de avatar *Requer Bearer Token (autenticação)*
 ```multipart/form-data
 {
     // Multipart Form
+
     avatar | jpg. png.
 }
 ```
 
-*/usuarios/avisos:* GET | Exibe avisos do usuário
+**/usuarios/avisos** GET | Exibe avisos do usuário *Requer Bearer Token (autenticação)*
 
+**/perfil** GET | Exibe perfil *Requer Bearer Token (autenticação)*
 
-
-*/perfil:* GET | Exibe perfil
-
-*/perfil:* PUT | Atualização do perfil
+**/perfil** PUT | Atualização do perfil *Requer Bearer Token (autenticação)*
 ```json
 {
 
@@ -92,7 +91,7 @@ O backend do projeto foi desenvolvido utilizando as seguintes tecnologias:
 }
 ```
 
-*/sessoes:* POST | Início de uma nova sessão
+**/sessoes** POST | Início de uma nova sessão 
 ```json
 {
     "username": "user1",
@@ -100,14 +99,14 @@ O backend do projeto foi desenvolvido utilizando as seguintes tecnologias:
 }
 ```
 
-*/senhas/esqueci* POST | Envia o token de recuperação de senha para o email
+**/senhas/esqueci** POST | Envia o token de recuperação de senha para o email
 ```json
 {
 	"email": "fansjdfnaskjdfnjkans@gmail.com"
 }
 ```
 
-*/senhas/resetar-senha:* POST | Reseta a senha
+**/senhas/resetar-senha** POST | Reseta a senha
 ```json
 {
     "token": "5ff936d0-584c-433b-a101-ff9fd74de43c",
@@ -117,18 +116,18 @@ O backend do projeto foi desenvolvido utilizando as seguintes tecnologias:
 ```
 
 - Módulo Administrador
-*/admin* POST | Atribui status de admin para um usuário
+**/admin** POST | Atribui status de admin para um usuário *Requer Bearer Token (autenticação)*
 ```json
 {
 	"username": "usuario2"
 }
 ```
 
-*/admin* GET | Retorna um admin e suas respectivas permissões
+**/admin** GET | Retorna um admin e suas respectivas permissões *Requer Bearer Token (autenticação)*
 
-*/admin/:username* DELETE | Remove status de admin de um usuário
+**/admin/username** DELETE | Remove status de admin de um usuário *Requer Bearer Token (autenticação)*
 
-*/admin/permissoes* POST | Adicionar permissão para um admin
+**/admin/permissoes** POST | Adicionar permissão para um admin *Requer Bearer Token (autenticação)*
 ```json
 {
 	"nomeAdmRecebedorDaPermissao": "usuario2",
@@ -136,7 +135,7 @@ O backend do projeto foi desenvolvido utilizando as seguintes tecnologias:
 }
 ```
 
-*/admin/avisos* POST | Enviar aviso
+**/admin/avisos** POST | Enviar aviso *Requer Bearer Token (autenticação)*
 ```json
 {
 	"username": "usuario5",
@@ -147,33 +146,35 @@ O backend do projeto foi desenvolvido utilizando as seguintes tecnologias:
 
 - Módulo jogo
 
-*/jogos* POST | Cadastrar jogo
+**/jogos** POST | Cadastrar jogo *Requer Bearer Token (autenticação)*
 ```multipart/form-data
 {
+	// Multipart Form
+
 	nome: jogo1,
 	capa: capaJogo1.jpg,
 	consoles[0]: console1,
 	consoles[1]: console2,
 }
 ```
-*/jogos* GET | Exibir jogos
+**/jogos** GET | Exibir jogos *Requer Bearer Token (autenticação)*
 
-*/jogos/:idJogo* DELETE | Deletar jogo
+**/jogos/:idJogo** DELETE | Deletar jogo *Requer Bearer Token (autenticação)*
 
-*/jogos/consoles* POST | Cadastrar console
+**/jogos/consoles** POST | Cadastrar console *Requer Bearer Token (autenticação)*
 ```json
 {
 	"nome": "console6"
 }
 ```
 
-*/jogos/consoles* GET | Exibir consoles
+**/jogos/consoles** GET | Exibir consoles *Requer Bearer Token (autenticação)*
 
-*/jogos/consoles/:idConsole* DELETE | Deleta console
+**/jogos/consoles/:idConsole** DELETE | Deleta console *Requer Bearer Token (autenticação)*
 
 - Módulo troca
 
-*/trocas* POST | Criar troca
+**/trocas** POST | Criar troca *Requer Bearer Token (autenticação)*
 ```json
 {
 	"descricao": "troca do user5",
@@ -183,13 +184,13 @@ O backend do projeto foi desenvolvido utilizando as seguintes tecnologias:
 	"consoleJogoOfertado": "console2"
 }
 ```
-*/trocas?nomeJogoOfertado=Jogo B&estado=Amapá* GET | Exibe trocas disponíveis, com ou sem filtro
+**/trocas?nomeJogoOfertado=Jogo B&estado=Amapá** GET | Exibe trocas disponíveis, com ou sem filtro *Requer Bearer Token (autenticação)*
 
-*/trocas/proprias* GET | Exibe trocas próprias
+**/trocas/proprias** GET | Exibe trocas próprias *Requer Bearer Token (autenticação)*
 
-*/trocas/:idTroca* DELETE | Desativa troca
+**/trocas/:idTroca** DELETE | Desativa troca *Requer Bearer Token (autenticação)*
 
-*/trocas/convites* POST | Envia convite para a troca
+**/trocas/convites** POST | Envia convite para a troca *Requer Bearer Token (autenticação)*
 ```json
 {
 	"mensagem": "asdasces",
@@ -197,20 +198,20 @@ O backend do projeto foi desenvolvido utilizando as seguintes tecnologias:
 }
 ```
 
-*/trocas/convites* GET | Exibe convites de uma troca
+**/trocas/convites** GET | Exibe convites de uma troca *Requer Bearer Token (autenticação)*
 
-*/trocas/convites* PUT | Responde ao convite
+**/trocas/convites** PUT | Responde ao convite *Requer Bearer Token (autenticação)*
 ```json
 {
 	"idConvite": "db198696-859f-4c5a-8518-df43c77397f6",
 	"respostaAoConvite": "aceitar"
 }
 ```
-*trocas/negociacoes* GET | Exibir negociações de um usuário
+**trocas/negociacoes** GET | Exibir negociações de um usuário *Requer Bearer Token (autenticação)*
 
-*trocas/negociacoes/:idNegociacao* DELETE | Desativa a negociação
+**trocas/negociacoes/:idNegociacao** DELETE | Desativa a negociação *Requer Bearer Token (autenticação)*
 
-*trocas/mensagemChat/:idNegociacao* GET | Exibir mensagens de chat de uma negociação
+**trocas/mensagemChat/:idNegociacao** GET | Exibir mensagens de chat de uma negociação *Requer Bearer Token (autenticação)*
 
 ---
 

@@ -1,0 +1,42 @@
+- [x]  Criação de usuário
+- [x]  Autenticação de usuário
+- [x]  Atualização de avatar de usuário
+- [x]  Atualização de dados de usuário
+- [x]  Exibir avisos de um usuário
+- [x]  Atribuir status de admin ao usuário
+- [x]  Autenticação de usuário admin
+- [x]  Envio de avisos
+- [x]  Cadastro de consoles
+- [x]  Cadastro de jogos
+- [x]  Criação de troca
+- [x]  Exibir trocas de um usuário
+- [x]  Exibir trocas não incluindo as do usuário logado
+- [x]  Envio de convites de um usuário para uma troca
+- [x]  Exibição de convites de uma troca
+- [x]  Aceitar ou recusar convite enviado a uma troca
+- [x]  Exibir negociações de uma troca
+- [x]  Desativação de uma troca pelo usuário
+- [x]  Desativação de uma negociação pelo usuário
+- [x]  Validar se admin possui determinada permissão
+- [x]  Adicionar 1 troca disponível por semana se trocas disponíveis for menor que 3
+- [x]  Envio de emails em ambiente de desenvolvimento
+- [x]  Reset de senha
+- [x]  Live chat
+- [x]  Criação de um customer com dados do usuário
+- [x]  Criação da assinatura
+- [x]  Cancelar assinatura premium
+- [x]  Atualizar método de pagamento
+- [x]  Adicionar permissão a um admin
+- [x]  Atribuir status de admin a um usuário
+- [x]  Cache: Trocas disponíveis
+- [x]  Cache:  Minhas trocas
+- [x]  Cache:  Negociações em andamento
+- [x]  Cache:  Mensagens Chat
+- [x]  Deletar jogo do banco de dados
+- [x]  Deletar console do banco de dados
+- [x]  Remover status de admin de um usuário
+- [x]  Rota para deletar notificação
+- [x]  Rota para desativar aviso
+- [x]  Colocar HTTP code nas rotas que estiverem faltando
+- [x]  Colocar HTTP code nos AppError
+- [x]  Refazer o diagrama de classes
